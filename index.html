@@ -1,199 +1,296 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curve Sketching Solutions</title>
-    <!-- Tailwind for styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- MathJax for rendering math formulas -->
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <!-- D3 and Function Plot for sketching curves -->
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://unpkg.com/function-plot/dist/function-plot.js"></script>
-    <style>
-        .math-block { margin-top: 0.5rem; margin-bottom: 1rem; }
-        .plot-container { overflow: hidden; display: flex; justify-content: center; }
-    </style>
+<meta charset="UTF-8">
+<title>Curve Sketching Solutions</title>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async
+src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<script src="https://www.desmos.com/api/v1.6/calculator.js?apiKey=desmos"></script>
+
+<style>
+
+body{
+font-family: Arial;
+margin:40px;
+line-height:1.6;
+}
+
+h1{
+text-align:center;
+}
+
+.problem{
+margin-top:60px;
+}
+
+.graph{
+width:600px;
+height:400px;
+margin-top:20px;
+border:1px solid #ccc;
+}
+
+</style>
 </head>
-<body class="bg-gray-100 text-gray-800 font-sans p-4 md:p-8">
 
-    <div class="max-w-6xl mx-auto">
-        <header class="mb-10 text-center">
-            <h1 class="text-4xl font-extrabold text-gray-900 mb-3">Calculus Curve Sketching</h1>
-            <p class="text-lg text-gray-600">Selected Exercises: 1, 9, 13, 15, and 21</p>
-        </header>
+<body>
 
-        <!-- Question 1 -->
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg mb-10">
-            <h2 class="text-2xl font-bold mb-6 border-b-2 border-blue-500 pb-2 text-gray-800">Question 1: \( y = x^3 + 3x^2 \)</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                    <h3 class="font-semibold text-lg text-blue-700">1. Domain</h3>
-                    <p class="math-block">Since it is a polynomial, the domain is \( (-\infty, \infty) \).</p>
+<h1>Curve Sketching Solutions</h1>
 
-                    <h3 class="font-semibold text-lg text-blue-700">2. Asymptotes</h3>
-                    <p class="math-block"><strong>Vertical:</strong> None <br> <strong>Horizontal:</strong> None</p>
+<p>Problems: 1, 9, 13, 15, 21</p>
 
-                    <h3 class="font-semibold text-lg text-blue-700">3. Critical Points</h3>
-                    <p class="math-block">First derivative: \( y' = 3x^2 + 6x = 3x(x + 2) \)</p>
-                    <p class="math-block">Setting \( y' = 0 \), we get \( x = 0 \) and \( x = -2 \).</p>
-                    <p class="math-block">Plugging these back into the original equation gives the points: <br><strong>(0, 0)</strong> and <strong>(-2, 4)</strong>.</p>
+---
 
-                    <h3 class="font-semibold text-lg text-blue-700">4. Inflection Points</h3>
-                    <p class="math-block">Second derivative: \( y'' = 6x + 6 = 6(x + 1) \)</p>
-                    <p class="math-block">Setting \( y'' = 0 \), we get \( x = -1 \).</p>
-                    <p class="math-block">Plugging \( x = -1 \) into the original equation gives the point: <br><strong>(-1, 2)</strong>.</p>
-                </div>
-                <div class="flex items-center justify-center bg-gray-50 border border-gray-200 rounded-lg p-4">
-                    <div id="plot1" class="plot-container w-full h-full min-h-[300px]"></div>
-                </div>
-            </div>
-        </div>
+<div class="problem">
 
-        <!-- Question 9 -->
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg mb-10">
-            <h2 class="text-2xl font-bold mb-6 border-b-2 border-blue-500 pb-2 text-gray-800">Question 9: \( y = \frac{x}{x - 1} \)</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                    <h3 class="font-semibold text-lg text-blue-700">1. Domain</h3>
-                    <p class="math-block">The denominator cannot be zero. Domain: \( (-\infty, 1) \cup (1, \infty) \).</p>
+<h2>Problem 1</h2>
 
-                    <h3 class="font-semibold text-lg text-blue-700">2. Asymptotes</h3>
-                    <p class="math-block"><strong>Vertical:</strong> \( x = 1 \) (denominator is 0, numerator is not)<br>
-                    <strong>Horizontal:</strong> \( y = 1 \) (since \( \lim_{x \to \pm\infty} \frac{x}{x-1} = 1 \))</p>
+<p>\(y = x^3 + 3x^2\)</p>
 
-                    <h3 class="font-semibold text-lg text-blue-700">3. Critical Points</h3>
-                    <p class="math-block">First derivative (Quotient Rule): <br> \( y' = \frac{(1)(x-1) - (x)(1)}{(x-1)^2} = \frac{-1}{(x-1)^2} \)</p>
-                    <p class="math-block">Since the numerator is never 0, \( y' \neq 0 \). <strong>None.</strong></p>
+<b>Domain</b>
 
-                    <h3 class="font-semibold text-lg text-blue-700">4. Inflection Points</h3>
-                    <p class="math-block">Second derivative: <br> \( y'' = \frac{d}{dx}[-(x-1)^{-2}] = 2(x-1)^{-3} = \frac{2}{(x-1)^3} \)</p>
-                    <p class="math-block">Since the numerator is never 0, \( y'' \neq 0 \). <strong>None.</strong></p>
-                </div>
-                <div class="flex items-center justify-center bg-gray-50 border border-gray-200 rounded-lg p-4">
-                    <div id="plot9" class="plot-container w-full h-full min-h-[300px]"></div>
-                </div>
-            </div>
-        </div>
+<p>\((-\infty,\infty)\)</p>
 
-        <!-- Question 13 -->
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg mb-10">
-            <h2 class="text-2xl font-bold mb-6 border-b-2 border-blue-500 pb-2 text-gray-800">Question 13: \( y = \frac{x}{x^2 - 4} \)</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                    <h3 class="font-semibold text-lg text-blue-700">1. Domain</h3>
-                    <p class="math-block">Denominator \( x^2 - 4 \neq 0 \Rightarrow x \neq \pm 2 \). <br> Domain: \( (-\infty, -2) \cup (-2, 2) \cup (2, \infty) \).</p>
+<b>First Derivative</b>
 
-                    <h3 class="font-semibold text-lg text-blue-700">2. Asymptotes</h3>
-                    <p class="math-block"><strong>Vertical:</strong> \( x = -2 \) and \( x = 2 \)<br>
-                    <strong>Horizontal:</strong> \( y = 0 \) (degree of denominator > degree of numerator)</p>
+<p>\(y' = 3x^2 + 6x = 3x(x+2)\)</p>
 
-                    <h3 class="font-semibold text-lg text-blue-700">3. Critical Points</h3>
-                    <p class="math-block">First derivative: <br> \( y' = \frac{(1)(x^2 - 4) - x(2x)}{(x^2 - 4)^2} = \frac{-(x^2 + 4)}{(x^2 - 4)^2} \)</p>
-                    <p class="math-block">Setting \( y' = 0 \Rightarrow -(x^2 + 4) = 0 \). No real solutions. <strong>None.</strong></p>
+<b>Critical Points</b>
 
-                    <h3 class="font-semibold text-lg text-blue-700">4. Inflection Points</h3>
-                    <p class="math-block">Second derivative: <br> \( y'' = \frac{2x(x^2 + 12)}{(x^2 - 4)^3} \)</p>
-                    <p class="math-block">Setting \( y'' = 0 \Rightarrow x = 0 \). <br> Point: <strong>(0, 0)</strong>.</p>
-                </div>
-                <div class="flex items-center justify-center bg-gray-50 border border-gray-200 rounded-lg p-4">
-                    <div id="plot13" class="plot-container w-full h-full min-h-[300px]"></div>
-                </div>
-            </div>
-        </div>
+<p>
+\(3x(x+2)=0\)
+<br>
+\(x=0, -2\)
+</p>
 
-        <!-- Question 15 -->
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg mb-10">
-            <h2 class="text-2xl font-bold mb-6 border-b-2 border-blue-500 pb-2 text-gray-800">Question 15: \( y = \frac{x^2}{x^2 + 3} \)</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                    <h3 class="font-semibold text-lg text-blue-700">1. Domain</h3>
-                    <p class="math-block">\( x^2 + 3 \) is always positive. Domain: \( (-\infty, \infty) \).</p>
+<p>
+\(y(0)=0\)
+<br>
+\(y(-2)=4\)
+</p>
 
-                    <h3 class="font-semibold text-lg text-blue-700">2. Asymptotes</h3>
-                    <p class="math-block"><strong>Vertical:</strong> None<br>
-                    <strong>Horizontal:</strong> \( y = 1 \) (since \( \lim_{x \to \pm\infty} \frac{x^2}{x^2+3} = 1 \))</p>
+<p>Critical points: (0,0), (-2,4)</p>
 
-                    <h3 class="font-semibold text-lg text-blue-700">3. Critical Points</h3>
-                    <p class="math-block">First derivative: <br> \( y' = \frac{2x(x^2 + 3) - x^2(2x)}{(x^2 + 3)^2} = \frac{6x}{(x^2 + 3)^2} \)</p>
-                    <p class="math-block">Setting \( y' = 0 \Rightarrow 6x = 0 \Rightarrow x = 0 \). <br> Point: <strong>(0, 0)</strong> (Local minimum).</p>
+<b>Second Derivative</b>
 
-                    <h3 class="font-semibold text-lg text-blue-700">4. Inflection Points</h3>
-                    <p class="math-block">Second derivative: <br> \( y'' = \frac{18(1 - x^2)}{(x^2 + 3)^3} \)</p>
-                    <p class="math-block">Setting \( y'' = 0 \Rightarrow 1 - x^2 = 0 \Rightarrow x = \pm 1 \).</p>
-                    <p class="math-block">Points: <strong>(1, 1/4)</strong> and <strong>(-1, 1/4)</strong>.</p>
-                </div>
-                <div class="flex items-center justify-center bg-gray-50 border border-gray-200 rounded-lg p-4">
-                    <div id="plot15" class="plot-container w-full h-full min-h-[300px]"></div>
-                </div>
-            </div>
-        </div>
+<p>\(y'' = 6x + 6\)</p>
 
-        <!-- Question 21 -->
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg mb-10">
-            <h2 class="text-2xl font-bold mb-6 border-b-2 border-blue-500 pb-2 text-gray-800">Question 21: \( y = (x - 3)\sqrt{x} \)</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                    <h3 class="font-semibold text-lg text-blue-700">1. Domain</h3>
-                    <p class="math-block">Due to the square root, \( x \ge 0 \). Domain: \( [0, \infty) \).</p>
+<b>Inflection Point</b>
 
-                    <h3 class="font-semibold text-lg text-blue-700">2. Asymptotes</h3>
-                    <p class="math-block"><strong>Vertical:</strong> None<br>
-                    <strong>Horizontal:</strong> None (as \( x \to \infty, y \to \infty \))</p>
+<p>
+\(6x+6=0\)
+<br>
+\(x=-1\)
+<br>
+\(y(-1)=2\)
+</p>
 
-                    <h3 class="font-semibold text-lg text-blue-700">3. Critical Points</h3>
-                    <p class="math-block">Rewrite as: \( y = x^{3/2} - 3x^{1/2} \)<br>
-                    First derivative: \( y' = \frac{3}{2}x^{1/2} - \frac{3}{2}x^{-1/2} = \frac{3(x - 1)}{2\sqrt{x}} \)</p>
-                    <p class="math-block">Setting \( y' = 0 \Rightarrow x = 1 \).</p>
-                    <p class="math-block">Point: <strong>(1, -2)</strong>. (Note: \( x=0 \) is a boundary point).</p>
+<p>Inflection: (-1,2)</p>
 
-                    <h3 class="font-semibold text-lg text-blue-700">4. Inflection Points</h3>
-                    <p class="math-block">Second derivative: <br> \( y'' = \frac{3}{4}x^{-1/2} + \frac{3}{4}x^{-3/2} = \frac{3(x + 1)}{4x^{3/2}} \)</p>
-                    <p class="math-block">Setting \( y'' = 0 \Rightarrow x = -1 \). (Not in domain \( [0, \infty) \)). <br> <strong>None.</strong></p>
-                </div>
-                <div class="flex items-center justify-center bg-gray-50 border border-gray-200 rounded-lg p-4">
-                    <div id="plot21" class="plot-container w-full h-full min-h-[300px]"></div>
-                </div>
-            </div>
-        </div>
+<b>Asymptotes</b>
 
-    </div>
+<p>None</p>
 
-    <script>
-        function createPlot(targetId, fnString, xDomain, yDomain) {
-            const container = document.getElementById(targetId);
-            // Default width, ideally filling the container correctly
-            const width = container.parentElement.clientWidth - 32 || 400; 
-            
-            functionPlot({
-                target: '#' + targetId,
-                width: width,
-                height: 350,
-                yAxis: { domain: yDomain },
-                xAxis: { domain: xDomain },
-                data: [{ 
-                    fn: fnString,
-                    color: '#2563eb', // Tailwind blue-600
-                }],
-                grid: true
-            });
-        }
+<div id="graph1" class="graph"></div>
 
-        // Initialize plots after a brief delay so DOM/containers are fully rendered
-        setTimeout(() => {
-            createPlot('plot1', 'x^3 + 3*x^2', [-4, 2.5], [-5, 6]);
-            createPlot('plot9', 'x / (x - 1)', [-4, 6], [-6, 6]);
-            createPlot('plot13', 'x / (x^2 - 4)', [-5, 5], [-5, 5]);
-            createPlot('plot15', 'x^2 / (x^2 + 3)', [-5, 5], [-0.5, 1.5]);
-            createPlot('plot21', '(x - 3) * sqrt(x)', [0, 6], [-3, 5]);
-        }, 150);
-        
-        // Basic responsive handling for chart widths
-        window.addEventListener('resize', () => {
-             // To prevent memory leaks or overwhelming the browser, a full robust app 
-             // would debounce and clear targets before rerendering on resize.
-        });
-    </script>
+</div>
+
+---
+
+<div class="problem">
+
+<h2>Problem 9</h2>
+
+<p>\(y = \frac{x}{x-1}\)</p>
+
+<b>Domain</b>
+
+<p>\(x \ne 1\)</p>
+
+<b>Derivative</b>
+
+<p>\(y' = \frac{-1}{(x-1)^2}\)</p>
+
+<b>Critical Points</b>
+
+<p>None</p>
+
+<b>Second Derivative</b>
+
+<p>\(y'' = \frac{2}{(x-1)^3}\)</p>
+
+<b>Asymptotes</b>
+
+<p>
+Vertical: \(x=1\)
+<br>
+Horizontal: \(y=1\)
+</p>
+
+<div id="graph2" class="graph"></div>
+
+</div>
+
+---
+
+<div class="problem">
+
+<h2>Problem 13</h2>
+
+<p>\(y = \frac{x}{x^2-4}\)</p>
+
+<b>Domain</b>
+
+<p>\(x \ne -2,2\)</p>
+
+<b>Derivative</b>
+
+<p>\(y'=\frac{-x^2-4}{(x^2-4)^2}\)</p>
+
+<b>Critical Points</b>
+
+<p>None</p>
+
+<b>Second Derivative</b>
+
+<p>\(y''=\frac{2x(x^2+12)}{(x^2-4)^3}\)</p>
+
+<b>Inflection</b>
+
+<p>(0,0)</p>
+
+<b>Asymptotes</b>
+
+<p>
+Vertical: \(x=-2, x=2\)
+<br>
+Horizontal: \(y=0\)
+</p>
+
+<div id="graph3" class="graph"></div>
+
+</div>
+
+---
+
+<div class="problem">
+
+<h2>Problem 15</h2>
+
+<p>\(y = \frac{x^2}{x^2+3}\)</p>
+
+<b>Domain</b>
+
+<p>\((-\infty,\infty)\)</p>
+
+<b>Derivative</b>
+
+<p>\(y'=\frac{6x}{(x^2+3)^2}\)</p>
+
+<b>Critical Point</b>
+
+<p>(0,0)</p>
+
+<b>Second Derivative</b>
+
+<p>\(y''=\frac{18(1-x^2)}{(x^2+3)^3}\)</p>
+
+<b>Inflection Points</b>
+
+<p>
+(-1, 1/4)
+<br>
+(1, 1/4)
+</p>
+
+<b>Asymptote</b>
+
+<p>\(y=1\)</p>
+
+<div id="graph4" class="graph"></div>
+
+</div>
+
+---
+
+<div class="problem">
+
+<h2>Problem 21</h2>
+
+<p>\(y=(x-3)\sqrt{x}\)</p>
+
+<b>Domain</b>
+
+<p>\(x \ge 0\)</p>
+
+<b>Derivative</b>
+
+<p>\(y'=\frac{3(x-1)}{2\sqrt{x}}\)</p>
+
+<b>Critical Point</b>
+
+<p>(1,-2)</p>
+
+<b>Second Derivative</b>
+
+<p>\(y''=\frac{3(x+1)}{4x^{3/2}}\)</p>
+
+<b>Intercepts</b>
+
+<p>
+(0,0)
+<br>
+(3,0)
+</p>
+
+<div id="graph5" class="graph"></div>
+
+</div>
+
+---
+
+<script>
+
+function makeGraph(id, expression, extra=[]){
+
+let elt = document.getElementById(id)
+
+let calc = Desmos.GraphingCalculator(elt,{
+expressions:false,
+settingsMenu:false
+})
+
+calc.setExpression({id:'f', latex:expression})
+
+extra.forEach(e=>{
+calc.setExpression({latex:e})
+})
+
+}
+
+makeGraph("graph1","y=x^3+3x^2")
+
+makeGraph("graph2","y=x/(x-1)",[
+"x=1",
+"y=1"
+])
+
+makeGraph("graph3","y=x/(x^2-4)",[
+"x=2",
+"x=-2",
+"y=0"
+])
+
+makeGraph("graph4","y=x^2/(x^2+3)",[
+"y=1"
+])
+
+makeGraph("graph5","y=(x-3)\\sqrt{x}")
+
+</script>
+
 </body>
 </html>
