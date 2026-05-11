@@ -3,73 +3,490 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Webster University — Faculty Rent Tracker v2.0</title>
+<title>Webster University — Faculty Rent Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  /* Base Styles from Original Prototype [cite: 1691-1713] */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
   :root {
-    --navy: #0d1b3e; --navy-mid: #1a3060; --navy-light: #e8edf8;
-    --accent: #2563b0; --accent-soft: #dbeafe;
-    --green: #166534; --green-bg: #dcfce7;
-    --amber: #92400e; --amber-bg: #fef3c7;
-    --gray: #6b7280; --gray-bg: #f3f4f6;
-    --red: #991b1b; --red-bg: #fee2e2;
-    --border: #e2e8f0; --text: #0f172a;
-    --text-muted: #64748b; --bg: #f8fafc; --white: #ffffff;
-    --radius: 8px; --radius-lg: 12px;
+    --navy: #0d1b3e;
+    --navy-mid: #1a3060;
+    --navy-light: #e8edf8;
+    --accent: #2563b0;
+    --accent-soft: #dbeafe;
+    --green: #166534;
+    --green-bg: #dcfce7;
+    --amber: #92400e;
+    --amber-bg: #fef3c7;
+    --gray: #6b7280;
+    --gray-bg: #f3f4f6;
+    --red: #991b1b;
+    --red-bg: #fee2e2;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --bg: #f8fafc;
+    --white: #ffffff;
+    --radius: 8px;
+    --radius-lg: 12px;
   }
-  body { font-family: 'IBM Plex Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
-  
-  /* Layout Components [cite: 1722-1807] */
-  .header { background: var(--navy); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
-  .header-logo { font-size: 13px; font-weight: 600; color: #fff; letter-spacing: 0.04em; text-transform: uppercase; }
-  .header-fy { font-size: 12px; background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.85); padding: 3px 10px; border-radius: 20px; font-family: 'IBM Plex Mono', monospace; }
 
-  .tab-nav { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; }
-  .tab-btn { padding: 12px 20px; border: none; background: none; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-muted); border-bottom: 2px solid transparent; }
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--navy);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 16px; }
+  .header-logo {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    opacity: 0.9;
+  }
+  .header-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.2); }
+  .header-title { font-size: 14px; color: rgba(255,255,255,0.75); font-weight: 400; }
+  .header-fy {
+    font-size: 12px;
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.85);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* METRICS */
+  .metrics-bar {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+  .metric {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0.75rem 1rem;
+    background: var(--bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+  .metric-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); font-weight: 500; }
+  .metric-value { font-size: 22px; font-weight: 600; color: var(--navy); font-family: 'IBM Plex Mono', monospace; }
+  .metric-sub { font-size: 11px; color: var(--text-muted); }
+
+  /* TABS */
+  .tab-nav {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    gap: 0;
+  }
+  .tab-btn {
+    padding: 12px 20px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tab-btn:hover { color: var(--navy); }
   .tab-btn.active { color: var(--navy); border-bottom-color: var(--accent); }
+  .tab-count {
+    background: var(--navy-light);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
 
-  /* Table and Dashboard Styling [cite: 1812-1857] */
-  .table-wrapper { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin: 1.5rem 2rem; }
-  .scroll-wrapper { overflow-x: auto; max-width: 100%; }
-  table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  thead th { background: var(--bg); padding: 10px; text-align: left; font-size: 10px; font-weight: 600; text-transform: uppercase; border-bottom: 1px solid var(--border); white-space: nowrap; }
-  .sticky-col { position: sticky; left: 0; background: var(--white); z-index: 10; border-right: 1px solid var(--border); }
-  
-  /* Indicators [cite: 1860-1891] */
-  .badge { padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 500; }
+  /* CONTENT */
+  .tab-content { display: none; padding: 1.5rem 2rem; }
+  .tab-content.active { display: block; }
+
+  /* TABLE WRAPPER */
+  .table-wrapper {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .table-toolbar {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .table-toolbar-title { font-size: 13px; font-weight: 500; color: var(--text); }
+  .toolbar-note { font-size: 11px; color: var(--text-muted); }
+
+  .scroll-wrapper { overflow-x: auto; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  thead th {
+    background: var(--bg);
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+  }
+  thead th.month-header {
+    background: var(--navy-light);
+    color: var(--accent);
+  }
+  thead th.month-sub {
+    background: #f0f5ff;
+    color: #6b8fc9;
+    font-size: 10px;
+  }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--bg); }
+  td { padding: 10px 12px; white-space: nowrap; vertical-align: middle; }
+
+  .sticky-col { position: sticky; left: 0; background: var(--white); z-index: 1; border-right: 1px solid var(--border); }
+  tr:hover .sticky-col { background: var(--bg); }
+
+  /* BADGES */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
   .badge-green { background: var(--green-bg); color: var(--green); }
+  .badge-amber { background: var(--amber-bg); color: var(--amber); }
+  .badge-gray { background: var(--gray-bg); color: var(--gray); }
   .badge-blue { background: var(--accent-soft); color: var(--accent); }
-  .method-pill { font-size: 9px; padding: 1px 6px; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
-  .to-emp { background: #eff6ff; color: #1d4ed8; border: 1px solid #dbeafe; }
-  .to-ll { background: #f0fdf4; color: #15803d; border: 1px solid #dcfce7; }
+  .badge-red { background: var(--red-bg); color: var(--red); }
+
+  .method-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .method-employee { background: #eff6ff; color: #1d4ed8; }
+  .method-landlord { background: #f0fdf4; color: #15803d; }
+
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  .id-cell { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text-muted); }
+
+  .amount-paid { font-family: 'IBM Plex Mono', monospace; font-weight: 500; color: var(--navy); font-size: 12px; }
+  .date-paid { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+  .not-paid { color: var(--border); font-size: 11px; }
+
+  .variance-pos { color: var(--green); font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; }
+  .variance-neg { color: var(--red); font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; }
+  .variance-zero { color: var(--text-muted); font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
+
+  /* MONTH GROUP HEADERS */
+  .month-group-header { background: var(--navy-light); text-align: center; font-size: 10px; font-weight: 600; color: var(--accent); letter-spacing: 0.04em; padding: 4px 8px; border-bottom: 1px solid var(--border); }
+
+  /* TAB 2 CONTRACTS */
+  .contracts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1rem;
+  }
+  .contract-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .contract-card-header {
+    background: var(--navy);
+    padding: 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .contract-id { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: rgba(255,255,255,0.6); }
+  .contract-name { font-size: 14px; font-weight: 500; color: #fff; margin-top: 2px; }
+  .contract-body { padding: 14px 16px; }
+  .contract-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12.5px;
+  }
+  .contract-row:last-child { border-bottom: none; }
+  .contract-label { color: var(--text-muted); }
+  .contract-value { font-weight: 500; color: var(--text); text-align: right; }
+  .contract-amount { font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: var(--navy); }
+  .linked-faculty { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .linked-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
+  .linked-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+  .chip { background: var(--navy-light); color: var(--accent); font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+
+  /* TAB 3 SCHEDULE */
+  .schedule-top {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .search-title { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 10px; }
+  .search-row { display: flex; gap: 8px; align-items: center; }
+  .search-input {
+    flex: 1;
+    max-width: 300px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-input:focus { border-color: var(--accent); }
+  .search-btn {
+    padding: 8px 16px;
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .search-btn:hover { background: var(--navy-mid); }
+  .clear-btn {
+    padding: 8px 12px;
+    background: none;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .clear-btn:hover { background: var(--bg); }
+
+  .profile-panel {
+    background: var(--navy-light);
+    border: 1px solid #c7d8f0;
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    display: none;
+  }
+  .profile-panel.visible { display: block; }
+  .profile-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--navy);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 14px;
+    flex-shrink: 0;
+  }
+  .profile-name { font-size: 15px; font-weight: 600; color: var(--navy); }
+  .profile-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .profile-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
+  .pstat { background: var(--white); border-radius: var(--radius); padding: 8px 12px; }
+  .pstat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 600; margin-bottom: 2px; }
+  .pstat-value { font-size: 14px; font-weight: 600; color: var(--navy); font-family: 'IBM Plex Mono', monospace; }
+
+  .schedule-table-wrapper {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .schedule-filters {
+    padding: 10px 16px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .filter-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 600; margin-right: 4px; }
+  .filter-btn {
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: var(--white);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.1s;
+  }
+  .filter-btn:hover, .filter-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+  .empty-state { padding: 3rem; text-align: center; color: var(--text-muted); font-size: 13px; }
+  .empty-icon { font-size: 2rem; margin-bottom: 8px; opacity: 0.3; }
+
+  .total-row td { background: var(--bg); font-weight: 600; border-top: 2px solid var(--border); }
+
+  /* SECTION DIVIDERS IN TABLE */
+  .col-divider { border-left: 2px solid var(--navy-light) !important; }
+
+  footer-note {
+    display: block;
+    padding: 12px 2rem;
+    font-size: 11px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    background: var(--white);
+  }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="header-logo">Webster University — Rent Tracker</div>
+  <div class="header-left">
+    <span class="header-logo">Webster University</span>
+    <div class="header-divider"></div>
+    <span class="header-title">Faculty Rent Tracker</span>
+  </div>
   <span class="header-fy">FY 2025–2026</span>
 </div>
 
-<div class="tab-nav">
-  <button class="tab-btn active" onclick="switchTab('tab1', this)">Faculty Rent Register</button>
-  <button class="tab-btn" onclick="switchTab('tab3', this)">Payment Schedule History</button>
+<div class="metrics-bar">
+  <div class="metric">
+    <span class="metric-label">Active Faculty</span>
+    <span class="metric-value">4</span>
+    <span class="metric-sub">1 checked out</span>
+  </div>
+  <div class="metric">
+    <span class="metric-label">Monthly Commitment</span>
+    <span class="metric-value">$2,900</span>
+    <span class="metric-sub">2 singles · 2 couples</span>
+  </div>
+  <div class="metric">
+    <span class="metric-label">Total Paid YTD</span>
+    <span class="metric-value">$22,750</span>
+    <span class="metric-sub">Across all faculty</span>
+  </div>
+  <div class="metric">
+    <span class="metric-label">Pending This Month</span>
+    <span class="metric-value">$1,400</span>
+    <span class="metric-sub">May 2026 · 2 remaining</span>
+  </div>
 </div>
 
-<div id="tab1" class="tab-content" style="display:block;">
+<!-- TABS -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('tab1', this)">
+    Faculty Register <span class="tab-count">5</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('tab2', this)">
+    Landlord Contracts <span class="tab-count">4</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('tab3', this)">
+    Payment Schedule
+  </button>
+</div>
+
+<!-- TAB 1: FACULTY REGISTER -->
+<div id="tab1" class="tab-content active">
   <div class="table-wrapper">
+    <div class="table-toolbar">
+      <span class="table-toolbar-title">Faculty Rent Register — FY 2025/2026</span>
+      <span class="toolbar-note">Months: May 2025 → April 2026 · Each month shows Amount / Date Paid</span>
+    </div>
     <div class="scroll-wrapper">
       <table>
         <thead>
-          <tr id="reg-header-top">
-            <th rowspan="2" class="sticky-col">Faculty ID / Name</th>
-            <th rowspan="2">Type</th>
-            <th rowspan="2">Allowance</th>
-            </tr>
-          <tr id="reg-header-sub">
-            </tr>
+          <tr>
+            <th rowspan="2" class="sticky-col" style="min-width:70px">ID</th>
+            <th rowspan="2" style="min-width:170px">Name</th>
+            <th rowspan="2" style="min-width:110px">Department</th>
+            <th rowspan="2" style="min-width:90px">Occupancy</th>
+            <th rowspan="2" style="min-width:100px">Partner</th>
+            <th rowspan="2" style="min-width:120px">Payment To</th>
+            <th rowspan="2" style="min-width:90px">Landlord</th>
+            <th rowspan="2" style="min-width:95px">Check-in</th>
+            <th rowspan="2" style="min-width:95px">Check-out</th>
+            <th rowspan="2" style="min-width:60px; text-align:center">Add. Days</th>
+            <th rowspan="2" style="min-width:110px">Eff. End Date</th>
+            <th rowspan="2" style="min-width:85px; text-align:right">Allowance</th>
+            <th colspan="2" class="month-header" style="text-align:center">May-25</th>
+            <th colspan="2" class="month-header" style="text-align:center">Jun-25</th>
+            <th colspan="2" class="month-header" style="text-align:center">Jul-25</th>
+            <th colspan="2" class="month-header" style="text-align:center">Aug-25</th>
+            <th colspan="2" class="month-header" style="text-align:center">Sep-25</th>
+            <th colspan="2" class="month-header" style="text-align:center">Oct-25</th>
+            <th colspan="2" class="month-header" style="text-align:center">Nov-25</th>
+            <th colspan="2" class="month-header" style="text-align:center">Dec-25</th>
+            <th colspan="2" class="month-header" style="text-align:center">Jan-26</th>
+            <th colspan="2" class="month-header" style="text-align:center">Feb-26</th>
+            <th colspan="2" class="month-header" style="text-align:center">Mar-26</th>
+            <th colspan="2" class="month-header" style="text-align:center">Apr-26</th>
+            <th rowspan="2" style="min-width:90px; text-align:right" class="col-divider">Total Paid</th>
+            <th rowspan="2" style="min-width:80px; text-align:right">Expected</th>
+            <th rowspan="2" style="min-width:80px; text-align:right">Variance</th>
+            <th rowspan="2" style="min-width:90px">Status</th>
+          </tr>
+          <tr>
+            <th class="month-sub" style="text-align:right">Amt</th><th class="month-sub">Date</th>
+            <th class="month-sub" style="text-align:right">Amt</th><th class="month-sub">Date</th>
+            <th class="month-sub" style="text-align:right">Amt</th><th class="month-sub">Date</th>
+            <th class="month-sub" style="text-align:right">Amt</th><th class="month-sub">Date</th>
+            <th class="month-sub" style="text-align:right">Amt</th><th class="month-sub">Date</th>
+            <th class="month-sub" style="text-align:right">Amt</th><th class="month-sub">Date</th>
+            <th class="month-sub" style="text-align:right">Amt</th><th class="month-sub">Date</th>
+            <th class="month-sub" style="text-align:right">Amt</th><th class="month-sub">Date</th>
+            <th class="month-sub" style="text-align:right">Amt</th><th class="month-sub">Date</th>
+            <th class="month-sub" style="text-align:right">Amt</th><th class="month-sub">Date</th>
+            <th class="month-sub" style="text-align:right">Amt</th><th class="month-sub">Date</th>
+            <th class="month-sub" style="text-align:right">Amt</th><th class="month-sub">Date</th>
+          </tr>
         </thead>
         <tbody id="register-body"></tbody>
       </table>
@@ -77,99 +494,411 @@
   </div>
 </div>
 
-<div id="tab3" class="tab-content" style="display:none; padding: 2rem;">
-  <div style="background:white; padding:1.5rem; border-radius:12px; border:1px solid var(--border);">
-    <h3 style="margin-bottom:1rem; font-size:14px;">Audit History — All Payments</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Faculty</th>
-          <th>Month</th>
-          <th>Amount Paid</th>
-          <th>Date Paid</th>
-          <th>Recipient</th> <th>Status</th>
-        </tr>
-      </thead>
-      <tbody id="schedule-body"></tbody>
-    </table>
+<!-- TAB 2: LANDLORD CONTRACTS -->
+<div id="tab2" class="tab-content">
+  <div class="contracts-grid" id="contracts-grid"></div>
+</div>
+
+<!-- TAB 3: PAYMENT SCHEDULE -->
+<div id="tab3" class="tab-content">
+  <div class="schedule-top">
+    <div class="search-title">Look up faculty payment history</div>
+    <div class="search-row">
+      <input type="text" class="search-input" id="search-input" placeholder="Type name or ID (e.g. FAC-001 or Vasquez)..." onkeydown="if(event.key==='Enter')doSearch()">
+      <button class="search-btn" onclick="doSearch()">Search</button>
+      <button class="clear-btn" onclick="clearSearch()">Clear</button>
+    </div>
+  </div>
+
+  <div class="profile-panel" id="profile-panel"></div>
+
+  <div class="schedule-table-wrapper">
+    <div class="schedule-filters">
+      <span class="filter-label">Filter:</span>
+      <button class="filter-btn active" onclick="filterSchedule('all', this)">All</button>
+      <button class="filter-btn" onclick="filterSchedule('paid', this)">Paid</button>
+      <button class="filter-btn" onclick="filterSchedule('upcoming', this)">Upcoming</button>
+      <button class="filter-btn" onclick="filterSchedule('overdue', this)">Overdue</button>
+    </div>
+    <div class="scroll-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Method</th>
+            <th>Month</th>
+            <th style="text-align:right">Amount Due</th>
+            <th>Date Paid</th>
+            <th>Status</th>
+            <th>Landlord</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="schedule-body"></tbody>
+      </table>
+    </div>
   </div>
 </div>
 
-<script>
-const months = ['May-25','Jun-25','Jul-25','Aug-25','Sep-25','Oct-25','Nov-25','Dec-25','Jan-26','Feb-26','Mar-26','Apr-26'];
+<footer-note id="footer">Webster University · Finance Department · Prototype v1.0 · Data is sample/placeholder</footer-note>
 
-// Expanded data showing monthly method variation [cite: 2202, 2215]
-const facultyData = [
+<script>
+const faculty = [
   {
-    id: 'FAC-001', name: 'Dr. Sarah Mitchell', occupancy: 'Single', allowance: 500,
+    id: 'FAC-001', name: 'Dr. Sarah Mitchell', dept: 'Humanities', occupancy: 'Single',
+    partner: '—', method: 'employee', landlord: 'LL-001',
+    checkin: 'Sep 1, 2025', checkout: 'May 15, 2026', addDays: 0, addReason: '',
+    allowance: 500, status: 'Active',
     payments: {
-      'May-25': { amt: 500, date: '01 May', method: 'Employee' },
-      'Jun-25': { amt: 500, date: '02 Jun', method: 'Landlord' }, // Method changed
-      'Jul-25': { amt: 500, date: '01 Jul', method: 'Employee' }
+      'May-25': null, 'Jun-25': null, 'Jul-25': null, 'Aug-25': null,
+      'Sep-25': {amt: 500, date: '01 Sep'}, 'Oct-25': {amt: 500, date: '01 Oct'},
+      'Nov-25': {amt: 500, date: '01 Nov'}, 'Dec-25': {amt: 500, date: '01 Dec'},
+      'Jan-26': {amt: 500, date: '02 Jan'}, 'Feb-26': {amt: 500, date: '01 Feb'},
+      'Mar-26': {amt: 500, date: '03 Mar'}, 'Apr-26': {amt: 500, date: '01 Apr'}
     }
   },
   {
-    id: 'FAC-002', name: 'Prof. James Chen', occupancy: 'Couple', allowance: 700,
+    id: 'FAC-002', name: 'Prof. James Chen', dept: 'Business', occupancy: 'Couple',
+    partner: 'Linda Chen', method: 'landlord', landlord: 'LL-002',
+    checkin: 'Aug 20, 2025', checkout: 'May 20, 2026', addDays: 8, addReason: 'Graduation ceremony',
+    allowance: 700, status: 'On Extension',
     payments: {
-      'May-25': { amt: 700, date: '01 May', method: 'Landlord' },
-      'Jun-25': { amt: 700, date: '01 Jun', method: 'Landlord' }
+      'May-25': null, 'Jun-25': null, 'Jul-25': null, 'Aug-25': {amt: 373, date: '20 Aug'},
+      'Sep-25': {amt: 700, date: '01 Sep'}, 'Oct-25': {amt: 700, date: '01 Oct'},
+      'Nov-25': {amt: 700, date: '01 Nov'}, 'Dec-25': {amt: 700, date: '01 Dec'},
+      'Jan-26': {amt: 700, date: '02 Jan'}, 'Feb-26': {amt: 700, date: '01 Feb'},
+      'Mar-26': {amt: 700, date: '03 Mar'}, 'Apr-26': {amt: 700, date: '01 Apr'}
+    }
+  },
+  {
+    id: 'FAC-003', name: 'Dr. Ahmad Karimi', dept: 'Economics', occupancy: 'Single',
+    partner: '—', method: 'employee', landlord: 'LL-003',
+    checkin: 'Jan 15, 2026', checkout: 'May 10, 2026', addDays: 0, addReason: '',
+    allowance: 500, status: 'Checked Out',
+    payments: {
+      'May-25': null, 'Jun-25': null, 'Jul-25': null, 'Aug-25': null,
+      'Sep-25': null, 'Oct-25': null, 'Nov-25': null, 'Dec-25': null,
+      'Jan-26': {amt: 275, date: '15 Jan'}, 'Feb-26': {amt: 500, date: '01 Feb'},
+      'Mar-26': {amt: 500, date: '03 Mar'}, 'Apr-26': {amt: 500, date: '01 Apr'}
+    }
+  },
+  {
+    id: 'FAC-004', name: 'Prof. Elena Vasquez', dept: 'Psychology', occupancy: 'Single',
+    partner: '—', method: 'landlord', landlord: 'LL-001',
+    checkin: 'Sep 1, 2025', checkout: 'Jun 30, 2026', addDays: 0, addReason: '',
+    allowance: 500, status: 'Active',
+    payments: {
+      'May-25': null, 'Jun-25': null, 'Jul-25': null, 'Aug-25': null,
+      'Sep-25': {amt: 500, date: '01 Sep'}, 'Oct-25': {amt: 500, date: '01 Oct'},
+      'Nov-25': {amt: 500, date: '01 Nov'}, 'Dec-25': {amt: 500, date: '01 Dec'},
+      'Jan-26': {amt: 500, date: '02 Jan'}, 'Feb-26': {amt: 500, date: '01 Feb'},
+      'Mar-26': {amt: 500, date: '03 Mar'}, 'Apr-26': {amt: 500, date: '01 Apr'}
+    }
+  },
+  {
+    id: 'FAC-005', name: 'Dr. Robert Okonkwo', dept: 'Computer Science', occupancy: 'Couple',
+    partner: 'Mary Okonkwo', method: 'landlord', landlord: 'LL-004',
+    checkin: 'Sep 1, 2025', checkout: 'May 15, 2026', addDays: 8, addReason: 'Graduation ceremony',
+    allowance: 700, status: 'On Extension',
+    payments: {
+      'May-25': null, 'Jun-25': null, 'Jul-25': null, 'Aug-25': null,
+      'Sep-25': {amt: 700, date: '01 Sep'}, 'Oct-25': {amt: 700, date: '01 Oct'},
+      'Nov-25': {amt: 700, date: '01 Nov'}, 'Dec-25': {amt: 700, date: '01 Dec'},
+      'Jan-26': {amt: 700, date: '02 Jan'}, 'Feb-26': {amt: 700, date: '01 Feb'},
+      'Mar-26': {amt: 700, date: '03 Mar'}, 'Apr-26': null
     }
   }
 ];
 
-function buildUI() {
-  const topRow = document.getElementById('reg-header-top');
-  const subRow = document.getElementById('reg-header-sub');
+const contracts = [
+  {
+    id: 'LL-001', name: 'Amir Tashkentov', phone: '+998 90 123 4567',
+    email: 'a.tashkentov@mail.uz', address: '14 Mustaqillik Shoh Koʻchasi, Tashkent',
+    start: 'Aug 1, 2025', end: 'Jul 31, 2026', rent: 500,
+    payDay: '1st of month', bank: 'Kapitalbank', account: 'UZ••••9812',
+    status: 'Active', faculty: ['FAC-001 · Dr. Mitchell', 'FAC-004 · Prof. Vasquez']
+  },
+  {
+    id: 'LL-002', name: 'Global Housing LLC', phone: '+998 71 200 5500',
+    email: 'rentals@globalhousing.uz', address: '3 Amir Temur Blvd, Suite 4B, Tashkent',
+    start: 'Aug 1, 2025', end: 'Jul 31, 2026', rent: 700,
+    payDay: '1st of month', bank: 'Ipoteka Bank', account: 'UZ••••3341',
+    status: 'Active', faculty: ['FAC-002 · Prof. Chen (couple)']
+  },
+  {
+    id: 'LL-003', name: 'Diana Petrova', phone: '+998 93 456 7890',
+    email: 'dpetrova@inbox.uz', address: '77 Chilonzor District, Block 9, Tashkent',
+    start: 'Jan 1, 2026', end: 'Jun 30, 2026', rent: 500,
+    payDay: '15th of month', bank: 'Uzpromstroybank', account: 'UZ••••7723',
+    status: 'Expired', faculty: ['FAC-003 · Dr. Karimi']
+  },
+  {
+    id: 'LL-004', name: 'Nodir Yusupov Properties', phone: '+998 97 321 0099',
+    email: 'n.yusupov@estate.uz', address: '22 Yunusobod District, Tashkent',
+    start: 'Aug 15, 2025', end: 'Jul 31, 2026', rent: 700,
+    payDay: '1st of month', bank: 'Agrobank', account: 'UZ••••5589',
+    status: 'Active', faculty: ['FAC-005 · Dr. Okonkwo (couple)']
+  }
+];
+
+const months = ['May-25','Jun-25','Jul-25','Aug-25','Sep-25','Oct-25','Nov-25','Dec-25','Jan-26','Feb-26','Mar-26','Apr-26'];
+const monthFull = {
+  'May-25':'May 2025','Jun-25':'Jun 2025','Jul-25':'Jul 2025','Aug-25':'Aug 2025',
+  'Sep-25':'Sep 2025','Oct-25':'Oct 2025','Nov-25':'Nov 2025','Dec-25':'Dec 2025',
+  'Jan-26':'Jan 2026','Feb-26':'Feb 2026','Mar-26':'Mar 2026','Apr-26':'Apr 2026'
+};
+
+const today = new Date('2026-05-11');
+
+function isPast(mo) {
+  const map = {'May-25':new Date('2025-05-01'),'Jun-25':new Date('2025-06-01'),'Jul-25':new Date('2025-07-01'),'Aug-25':new Date('2025-08-01'),'Sep-25':new Date('2025-09-01'),'Oct-25':new Date('2025-10-01'),'Nov-25':new Date('2025-11-01'),'Dec-25':new Date('2025-12-01'),'Jan-26':new Date('2026-01-01'),'Feb-26':new Date('2026-02-01'),'Mar-26':new Date('2026-03-01'),'Apr-26':new Date('2026-04-01')};
+  return map[mo] < today;
+}
+
+function statusBadge(s) {
+  if (s === 'Active') return `<span class="badge badge-green">${s}</span>`;
+  if (s === 'On Extension') return `<span class="badge badge-amber">${s}</span>`;
+  if (s === 'Checked Out') return `<span class="badge badge-gray">${s}</span>`;
+  return `<span class="badge badge-blue">${s}</span>`;
+}
+
+function methodPill(m) {
+  if (m === 'employee') return `<span class="method-pill method-employee">To Employee</span>`;
+  return `<span class="method-pill method-landlord">To Landlord</span>`;
+}
+
+function buildRegister() {
   const tbody = document.getElementById('register-body');
-  const sBody = document.getElementById('schedule-body');
-
-  // Build Headers [cite: 2114-2143]
-  months.forEach(m => {
-    const th = document.createElement('th');
-    th.colSpan = 3; th.style.textAlign = 'center'; th.style.background = '#e8edf8';
-    th.innerText = m;
-    topRow.appendChild(th);
-    subRow.innerHTML += `<th style="text-align:right">Amt</th><th>Date</th><th>To</th>`;
-  });
-
-  // Build Tab 1 & Tab 3 [cite: 2313, 2415]
-  facultyData.forEach(f => {
-    let row = `<tr><td class="sticky-col"><strong>${f.id}</strong><br><small>${f.name}</small></td>`;
-    row += `<td><span class="badge ${f.occupancy==='Couple'?'badge-amber':'badge-blue'}">${f.occupancy}</span></td>`;
-    row += `<td style="font-weight:600">$${f.allowance}</td>`;
-
-    months.forEach(m => {
-      const p = f.payments[m];
+  faculty.forEach(f => {
+    let totalPaid = 0;
+    let monthCells = '';
+    months.forEach(mo => {
+      const p = f.payments[mo];
       if (p) {
-        const mClass = p.method === 'Employee' ? 'to-emp' : 'to-ll';
-        row += `<td style="text-align:right; font-family:monospace">$${p.amt}</td>`;
-        row += `<td style="font-size:10px">${p.date}</td>`;
-        row += `<td><span class="method-pill ${mClass}">${p.method}</span></td>`;
-        
-        // Tab 3 history [cite: 2452-2463]
-        sBody.innerHTML += `<tr>
-          <td>${f.id}</td><td>${f.name}</td><td>${m}</td>
-          <td style="font-weight:600">$${p.amt}</td><td>${p.date}</td>
-          <td><span class="method-pill ${mClass}">${p.method}</span></td>
-          <td><span class="badge badge-green">Paid</span></td>
-        </tr>`;
+        totalPaid += p.amt;
+        monthCells += `<td style="text-align:right"><span class="amount-paid">$${p.amt}</span></td><td><span class="date-paid">${p.date}</span></td>`;
       } else {
-        row += `<td colspan="3" style="text-align:center; color:#ccc">—</td>`;
+        monthCells += `<td style="text-align:center"><span class="not-paid">—</span></td><td></td>`;
       }
     });
-    tbody.innerHTML += row + `</tr>`;
+
+    const paidMonths = Object.values(f.payments).filter(p => p !== null).length;
+    const addAmt = (f.allowance / 30) * f.addDays;
+    const expected = f.allowance * paidMonths + addAmt;
+    const variance = totalPaid - expected;
+    let varianceCell = '';
+    if (Math.abs(variance) < 1) {
+      varianceCell = `<td style="text-align:right"><span class="variance-zero">$0</span></td>`;
+    } else if (variance > 0) {
+      varianceCell = `<td style="text-align:right"><span class="variance-pos">+$${Math.abs(variance).toFixed(0)}</span></td>`;
+    } else {
+      varianceCell = `<td style="text-align:right"><span class="variance-neg">-$${Math.abs(variance).toFixed(0)}</span></td>`;
+    }
+
+    const effEnd = f.addDays > 0 ? `${f.checkout} <span style="font-size:10px;color:var(--amber)">(+${f.addDays}d)</span>` : f.checkout;
+
+    tbody.innerHTML += `
+      <tr>
+        <td class="sticky-col id-cell">${f.id}</td>
+        <td><strong style="font-weight:500">${f.name}</strong></td>
+        <td style="color:var(--text-muted)">${f.dept}</td>
+        <td><span class="badge ${f.occupancy==='Couple'?'badge-amber':'badge-blue'}">${f.occupancy}</span></td>
+        <td style="color:var(--text-muted);font-size:12px">${f.partner}</td>
+        <td>${methodPill(f.method)}</td>
+        <td><span class="id-cell">${f.landlord}</span></td>
+        <td style="color:var(--text-muted);font-size:12px">${f.checkin}</td>
+        <td style="color:var(--text-muted);font-size:12px">${f.checkout}</td>
+        <td style="text-align:center">${f.addDays > 0 ? `<span class="badge badge-amber">${f.addDays}</span>` : '—'}</td>
+        <td style="font-size:12px">${effEnd}</td>
+        <td style="text-align:right"><span class="mono" style="font-weight:600;color:var(--navy)">$${f.allowance}</span></td>
+        ${monthCells}
+        <td style="text-align:right" class="col-divider"><span class="mono" style="font-weight:600">$${totalPaid.toLocaleString()}</span></td>
+        <td style="text-align:right"><span class="mono" style="color:var(--text-muted)">$${expected.toFixed(0)}</span></td>
+        ${varianceCell}
+        <td>${statusBadge(f.status)}</td>
+      </tr>`;
   });
+}
+
+function buildContracts() {
+  const grid = document.getElementById('contracts-grid');
+  contracts.forEach(c => {
+    const statusClass = c.status === 'Active' ? 'badge-green' : c.status === 'Expired' ? 'badge-red' : 'badge-amber';
+    const chips = c.faculty.map(f => `<span class="chip">${f}</span>`).join('');
+    grid.innerHTML += `
+      <div class="contract-card">
+        <div class="contract-card-header">
+          <div>
+            <div class="contract-id">${c.id}</div>
+            <div class="contract-name">${c.name}</div>
+          </div>
+          <span class="badge ${statusClass}" style="background:rgba(255,255,255,0.15);color:#fff">${c.status}</span>
+        </div>
+        <div class="contract-body">
+          <div class="contract-row">
+            <span class="contract-label">Agreed monthly rent</span>
+            <span class="contract-amount">$${c.rent}</span>
+          </div>
+          <div class="contract-row">
+            <span class="contract-label">Payment due</span>
+            <span class="contract-value">${c.payDay}</span>
+          </div>
+          <div class="contract-row">
+            <span class="contract-label">Contract period</span>
+            <span class="contract-value" style="font-size:12px">${c.start} — ${c.end}</span>
+          </div>
+          <div class="contract-row">
+            <span class="contract-label">Phone</span>
+            <span class="contract-value">${c.phone}</span>
+          </div>
+          <div class="contract-row">
+            <span class="contract-label">Email</span>
+            <span class="contract-value" style="color:var(--accent);font-size:12px">${c.email}</span>
+          </div>
+          <div class="contract-row">
+            <span class="contract-label">Bank account</span>
+            <span class="contract-value mono">${c.bank} · ${c.account}</span>
+          </div>
+          <div class="contract-row" style="align-items:flex-start">
+            <span class="contract-label">Address</span>
+            <span class="contract-value" style="font-size:12px;max-width:200px;white-space:normal;text-align:right">${c.address}</span>
+          </div>
+          <div class="linked-faculty">
+            <div class="linked-label">Assigned faculty</div>
+            <div class="linked-chips">${chips}</div>
+          </div>
+        </div>
+      </div>`;
+  });
+}
+
+let activeFilter = 'all';
+let activeSearch = null;
+
+function buildSchedule(filterFaculty = null, filter = 'all') {
+  const tbody = document.getElementById('schedule-body');
+  tbody.innerHTML = '';
+
+  let allRows = [];
+
+  faculty.forEach(f => {
+    months.forEach(mo => {
+      const p = f.payments[mo];
+      const past = isPast(mo);
+      let status = '';
+      let statusClass = '';
+
+      if (p) {
+        status = 'Paid'; statusClass = 'badge-green';
+      } else if (past) {
+        status = 'Overdue'; statusClass = 'badge-red';
+      } else {
+        status = 'Upcoming'; statusClass = 'badge-blue';
+      }
+
+      const ll = contracts.find(c => c.id === f.landlord);
+
+      allRows.push({
+        fId: f.id, name: f.name, method: f.method, month: mo, monthFull: monthFull[mo],
+        amt: f.allowance, datePaid: p ? p.date : '—', status, statusClass,
+        landlord: ll ? ll.name : f.landlord,
+        notes: f.addDays > 0 && mo === 'Apr-26' ? `Add. ${f.addDays} days after checkout` : ''
+      });
+    });
+  });
+
+  if (filterFaculty) {
+    allRows = allRows.filter(r => r.fId === filterFaculty || r.name.toLowerCase().includes(filterFaculty.toLowerCase()));
+  }
+  if (filter === 'paid') allRows = allRows.filter(r => r.status === 'Paid');
+  if (filter === 'upcoming') allRows = allRows.filter(r => r.status === 'Upcoming');
+  if (filter === 'overdue') allRows = allRows.filter(r => r.status === 'Overdue');
+
+  if (allRows.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">🔍</div>No results found.</div></td></tr>`;
+    return;
+  }
+
+  allRows.forEach(r => {
+    tbody.innerHTML += `
+      <tr>
+        <td class="id-cell">${r.fId}</td>
+        <td style="font-weight:500">${r.name}</td>
+        <td>${methodPill(r.method)}</td>
+        <td style="font-family:'IBM Plex Mono',monospace;font-size:12px">${r.monthFull}</td>
+        <td style="text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500">$${r.amt}</td>
+        <td style="font-size:12px;color:var(--text-muted)">${r.datePaid !== '—' ? r.datePaid + ' ' + r.month.slice(-2) : '—'}</td>
+        <td><span class="badge ${r.statusClass}">${r.status}</span></td>
+        <td style="font-size:12px;color:var(--text-muted)">${r.landlord}</td>
+        <td style="font-size:11px;color:var(--text-muted)">${r.notes}</td>
+      </tr>`;
+  });
+}
+
+function doSearch() {
+  const q = document.getElementById('search-input').value.trim();
+  if (!q) return;
+
+  const f = faculty.find(f => f.id.toLowerCase() === q.toLowerCase() || f.name.toLowerCase().includes(q.toLowerCase()));
+
+  const panel = document.getElementById('profile-panel');
+  if (f) {
+    const initials = f.name.split(' ').filter(w => w.match(/[A-Z]/)).slice(0, 2).map(w => w[0]).join('');
+    const totalPaid = Object.values(f.payments).filter(Boolean).reduce((s, p) => s + p.amt, 0);
+    const paidMonths = Object.values(f.payments).filter(Boolean).length;
+    const ll = contracts.find(c => c.id === f.landlord);
+
+    panel.innerHTML = `
+      <div class="profile-header">
+        <div class="avatar">${initials}</div>
+        <div>
+          <div class="profile-name">${f.name}</div>
+          <div class="profile-meta">${f.id} · ${f.dept} · ${f.occupancy}${f.partner !== '—' ? ' with ' + f.partner : ''}</div>
+        </div>
+        ${statusBadge(f.status)}
+      </div>
+      <div class="profile-stats">
+        <div class="pstat"><div class="pstat-label">Monthly</div><div class="pstat-value">$${f.allowance}</div></div>
+        <div class="pstat"><div class="pstat-label">Months Paid</div><div class="pstat-value">${paidMonths}</div></div>
+        <div class="pstat"><div class="pstat-label">Total Paid</div><div class="pstat-value">$${totalPaid.toLocaleString()}</div></div>
+        <div class="pstat"><div class="pstat-label">Landlord</div><div class="pstat-value" style="font-size:11px">${ll ? ll.name.split(' ')[0] : '—'}</div></div>
+      </div>`;
+    panel.classList.add('visible');
+    activeSearch = f.id;
+  } else {
+    panel.innerHTML = `<div style="color:var(--red);font-size:13px">No faculty found for "<strong>${q}</strong>". Try an ID like FAC-001 or a partial name.</div>`;
+    panel.classList.add('visible');
+    activeSearch = null;
+  }
+
+  buildSchedule(activeSearch, activeFilter);
+}
+
+function clearSearch() {
+  document.getElementById('search-input').value = '';
+  document.getElementById('profile-panel').classList.remove('visible');
+  activeSearch = null;
+  buildSchedule(null, activeFilter);
+}
+
+function filterSchedule(f, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeFilter = f;
+  buildSchedule(activeSearch, activeFilter);
 }
 
 function switchTab(id, btn) {
-  document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById(id).style.display = 'block';
+  document.getElementById(id).classList.add('active');
   btn.classList.add('active');
 }
 
-buildUI();
+buildRegister();
+buildContracts();
+buildSchedule();
 </script>
 </body>
 </html>
