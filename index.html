@@ -1,199 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curve Sketching Solutions</title>
-    <!-- Tailwind for styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- MathJax for rendering math formulas -->
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <!-- D3 and Function Plot for sketching curves -->
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://unpkg.com/function-plot/dist/function-plot.js"></script>
-    <style>
-        .math-block { margin-top: 0.5rem; margin-bottom: 1rem; }
-        .plot-container { overflow: hidden; display: flex; justify-content: center; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Webster University — Faculty Rent Tracker v2.0</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* Base Styles from Original Prototype [cite: 1691-1713] */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #0d1b3e; --navy-mid: #1a3060; --navy-light: #e8edf8;
+    --accent: #2563b0; --accent-soft: #dbeafe;
+    --green: #166534; --green-bg: #dcfce7;
+    --amber: #92400e; --amber-bg: #fef3c7;
+    --gray: #6b7280; --gray-bg: #f3f4f6;
+    --red: #991b1b; --red-bg: #fee2e2;
+    --border: #e2e8f0; --text: #0f172a;
+    --text-muted: #64748b; --bg: #f8fafc; --white: #ffffff;
+    --radius: 8px; --radius-lg: 12px;
+  }
+  body { font-family: 'IBM Plex Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
+  
+  /* Layout Components [cite: 1722-1807] */
+  .header { background: var(--navy); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
+  .header-logo { font-size: 13px; font-weight: 600; color: #fff; letter-spacing: 0.04em; text-transform: uppercase; }
+  .header-fy { font-size: 12px; background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.85); padding: 3px 10px; border-radius: 20px; font-family: 'IBM Plex Mono', monospace; }
+
+  .tab-nav { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; }
+  .tab-btn { padding: 12px 20px; border: none; background: none; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-muted); border-bottom: 2px solid transparent; }
+  .tab-btn.active { color: var(--navy); border-bottom-color: var(--accent); }
+
+  /* Table and Dashboard Styling [cite: 1812-1857] */
+  .table-wrapper { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin: 1.5rem 2rem; }
+  .scroll-wrapper { overflow-x: auto; max-width: 100%; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead th { background: var(--bg); padding: 10px; text-align: left; font-size: 10px; font-weight: 600; text-transform: uppercase; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  .sticky-col { position: sticky; left: 0; background: var(--white); z-index: 10; border-right: 1px solid var(--border); }
+  
+  /* Indicators [cite: 1860-1891] */
+  .badge { padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 500; }
+  .badge-green { background: var(--green-bg); color: var(--green); }
+  .badge-blue { background: var(--accent-soft); color: var(--accent); }
+  .method-pill { font-size: 9px; padding: 1px 6px; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
+  .to-emp { background: #eff6ff; color: #1d4ed8; border: 1px solid #dbeafe; }
+  .to-ll { background: #f0fdf4; color: #15803d; border: 1px solid #dcfce7; }
+</style>
 </head>
-<body class="bg-gray-100 text-gray-800 font-sans p-4 md:p-8">
+<body>
 
-    <div class="max-w-6xl mx-auto">
-        <header class="mb-10 text-center">
-            <h1 class="text-4xl font-extrabold text-gray-900 mb-3">Calculus Curve Sketching</h1>
-            <p class="text-lg text-gray-600">Selected Exercises: 1, 9, 13, 15, and 21</p>
-        </header>
+<div class="header">
+  <div class="header-logo">Webster University — Rent Tracker</div>
+  <span class="header-fy">FY 2025–2026</span>
+</div>
 
-        <!-- Question 1 -->
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg mb-10">
-            <h2 class="text-2xl font-bold mb-6 border-b-2 border-blue-500 pb-2 text-gray-800">Question 1: \( y = x^3 + 3x^2 \)</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                    <h3 class="font-semibold text-lg text-blue-700">1. Domain</h3>
-                    <p class="math-block">Since it is a polynomial, the domain is \( (-\infty, \infty) \).</p>
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('tab1', this)">Faculty Rent Register</button>
+  <button class="tab-btn" onclick="switchTab('tab3', this)">Payment Schedule History</button>
+</div>
 
-                    <h3 class="font-semibold text-lg text-blue-700">2. Asymptotes</h3>
-                    <p class="math-block"><strong>Vertical:</strong> None <br> <strong>Horizontal:</strong> None</p>
-
-                    <h3 class="font-semibold text-lg text-blue-700">3. Critical Points</h3>
-                    <p class="math-block">First derivative: \( y' = 3x^2 + 6x = 3x(x + 2) \)</p>
-                    <p class="math-block">Setting \( y' = 0 \), we get \( x = 0 \) and \( x = -2 \).</p>
-                    <p class="math-block">Plugging these back into the original equation gives the points: <br><strong>(0, 0)</strong> and <strong>(-2, 4)</strong>.</p>
-
-                    <h3 class="font-semibold text-lg text-blue-700">4. Inflection Points</h3>
-                    <p class="math-block">Second derivative: \( y'' = 6x + 6 = 6(x + 1) \)</p>
-                    <p class="math-block">Setting \( y'' = 0 \), we get \( x = -1 \).</p>
-                    <p class="math-block">Plugging \( x = -1 \) into the original equation gives the point: <br><strong>(-1, 2)</strong>.</p>
-                </div>
-                <div class="flex items-center justify-center bg-gray-50 border border-gray-200 rounded-lg p-4">
-                    <div id="plot1" class="plot-container w-full h-full min-h-[300px]"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Question 9 -->
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg mb-10">
-            <h2 class="text-2xl font-bold mb-6 border-b-2 border-blue-500 pb-2 text-gray-800">Question 9: \( y = \frac{x}{x - 1} \)</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                    <h3 class="font-semibold text-lg text-blue-700">1. Domain</h3>
-                    <p class="math-block">The denominator cannot be zero. Domain: \( (-\infty, 1) \cup (1, \infty) \).</p>
-
-                    <h3 class="font-semibold text-lg text-blue-700">2. Asymptotes</h3>
-                    <p class="math-block"><strong>Vertical:</strong> \( x = 1 \) (denominator is 0, numerator is not)<br>
-                    <strong>Horizontal:</strong> \( y = 1 \) (since \( \lim_{x \to \pm\infty} \frac{x}{x-1} = 1 \))</p>
-
-                    <h3 class="font-semibold text-lg text-blue-700">3. Critical Points</h3>
-                    <p class="math-block">First derivative (Quotient Rule): <br> \( y' = \frac{(1)(x-1) - (x)(1)}{(x-1)^2} = \frac{-1}{(x-1)^2} \)</p>
-                    <p class="math-block">Since the numerator is never 0, \( y' \neq 0 \). <strong>None.</strong></p>
-
-                    <h3 class="font-semibold text-lg text-blue-700">4. Inflection Points</h3>
-                    <p class="math-block">Second derivative: <br> \( y'' = \frac{d}{dx}[-(x-1)^{-2}] = 2(x-1)^{-3} = \frac{2}{(x-1)^3} \)</p>
-                    <p class="math-block">Since the numerator is never 0, \( y'' \neq 0 \). <strong>None.</strong></p>
-                </div>
-                <div class="flex items-center justify-center bg-gray-50 border border-gray-200 rounded-lg p-4">
-                    <div id="plot9" class="plot-container w-full h-full min-h-[300px]"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Question 13 -->
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg mb-10">
-            <h2 class="text-2xl font-bold mb-6 border-b-2 border-blue-500 pb-2 text-gray-800">Question 13: \( y = \frac{x}{x^2 - 4} \)</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                    <h3 class="font-semibold text-lg text-blue-700">1. Domain</h3>
-                    <p class="math-block">Denominator \( x^2 - 4 \neq 0 \Rightarrow x \neq \pm 2 \). <br> Domain: \( (-\infty, -2) \cup (-2, 2) \cup (2, \infty) \).</p>
-
-                    <h3 class="font-semibold text-lg text-blue-700">2. Asymptotes</h3>
-                    <p class="math-block"><strong>Vertical:</strong> \( x = -2 \) and \( x = 2 \)<br>
-                    <strong>Horizontal:</strong> \( y = 0 \) (degree of denominator > degree of numerator)</p>
-
-                    <h3 class="font-semibold text-lg text-blue-700">3. Critical Points</h3>
-                    <p class="math-block">First derivative: <br> \( y' = \frac{(1)(x^2 - 4) - x(2x)}{(x^2 - 4)^2} = \frac{-(x^2 + 4)}{(x^2 - 4)^2} \)</p>
-                    <p class="math-block">Setting \( y' = 0 \Rightarrow -(x^2 + 4) = 0 \). No real solutions. <strong>None.</strong></p>
-
-                    <h3 class="font-semibold text-lg text-blue-700">4. Inflection Points</h3>
-                    <p class="math-block">Second derivative: <br> \( y'' = \frac{2x(x^2 + 12)}{(x^2 - 4)^3} \)</p>
-                    <p class="math-block">Setting \( y'' = 0 \Rightarrow x = 0 \). <br> Point: <strong>(0, 0)</strong>.</p>
-                </div>
-                <div class="flex items-center justify-center bg-gray-50 border border-gray-200 rounded-lg p-4">
-                    <div id="plot13" class="plot-container w-full h-full min-h-[300px]"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Question 15 -->
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg mb-10">
-            <h2 class="text-2xl font-bold mb-6 border-b-2 border-blue-500 pb-2 text-gray-800">Question 15: \( y = \frac{x^2}{x^2 + 3} \)</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                    <h3 class="font-semibold text-lg text-blue-700">1. Domain</h3>
-                    <p class="math-block">\( x^2 + 3 \) is always positive. Domain: \( (-\infty, \infty) \).</p>
-
-                    <h3 class="font-semibold text-lg text-blue-700">2. Asymptotes</h3>
-                    <p class="math-block"><strong>Vertical:</strong> None<br>
-                    <strong>Horizontal:</strong> \( y = 1 \) (since \( \lim_{x \to \pm\infty} \frac{x^2}{x^2+3} = 1 \))</p>
-
-                    <h3 class="font-semibold text-lg text-blue-700">3. Critical Points</h3>
-                    <p class="math-block">First derivative: <br> \( y' = \frac{2x(x^2 + 3) - x^2(2x)}{(x^2 + 3)^2} = \frac{6x}{(x^2 + 3)^2} \)</p>
-                    <p class="math-block">Setting \( y' = 0 \Rightarrow 6x = 0 \Rightarrow x = 0 \). <br> Point: <strong>(0, 0)</strong> (Local minimum).</p>
-
-                    <h3 class="font-semibold text-lg text-blue-700">4. Inflection Points</h3>
-                    <p class="math-block">Second derivative: <br> \( y'' = \frac{18(1 - x^2)}{(x^2 + 3)^3} \)</p>
-                    <p class="math-block">Setting \( y'' = 0 \Rightarrow 1 - x^2 = 0 \Rightarrow x = \pm 1 \).</p>
-                    <p class="math-block">Points: <strong>(1, 1/4)</strong> and <strong>(-1, 1/4)</strong>.</p>
-                </div>
-                <div class="flex items-center justify-center bg-gray-50 border border-gray-200 rounded-lg p-4">
-                    <div id="plot15" class="plot-container w-full h-full min-h-[300px]"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Question 21 -->
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg mb-10">
-            <h2 class="text-2xl font-bold mb-6 border-b-2 border-blue-500 pb-2 text-gray-800">Question 21: \( y = (x - 3)\sqrt{x} \)</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                    <h3 class="font-semibold text-lg text-blue-700">1. Domain</h3>
-                    <p class="math-block">Due to the square root, \( x \ge 0 \). Domain: \( [0, \infty) \).</p>
-
-                    <h3 class="font-semibold text-lg text-blue-700">2. Asymptotes</h3>
-                    <p class="math-block"><strong>Vertical:</strong> None<br>
-                    <strong>Horizontal:</strong> None (as \( x \to \infty, y \to \infty \))</p>
-
-                    <h3 class="font-semibold text-lg text-blue-700">3. Critical Points</h3>
-                    <p class="math-block">Rewrite as: \( y = x^{3/2} - 3x^{1/2} \)<br>
-                    First derivative: \( y' = \frac{3}{2}x^{1/2} - \frac{3}{2}x^{-1/2} = \frac{3(x - 1)}{2\sqrt{x}} \)</p>
-                    <p class="math-block">Setting \( y' = 0 \Rightarrow x = 1 \).</p>
-                    <p class="math-block">Point: <strong>(1, -2)</strong>. (Note: \( x=0 \) is a boundary point).</p>
-
-                    <h3 class="font-semibold text-lg text-blue-700">4. Inflection Points</h3>
-                    <p class="math-block">Second derivative: <br> \( y'' = \frac{3}{4}x^{-1/2} + \frac{3}{4}x^{-3/2} = \frac{3(x + 1)}{4x^{3/2}} \)</p>
-                    <p class="math-block">Setting \( y'' = 0 \Rightarrow x = -1 \). (Not in domain \( [0, \infty) \)). <br> <strong>None.</strong></p>
-                </div>
-                <div class="flex items-center justify-center bg-gray-50 border border-gray-200 rounded-lg p-4">
-                    <div id="plot21" class="plot-container w-full h-full min-h-[300px]"></div>
-                </div>
-            </div>
-        </div>
-
+<div id="tab1" class="tab-content" style="display:block;">
+  <div class="table-wrapper">
+    <div class="scroll-wrapper">
+      <table>
+        <thead>
+          <tr id="reg-header-top">
+            <th rowspan="2" class="sticky-col">Faculty ID / Name</th>
+            <th rowspan="2">Type</th>
+            <th rowspan="2">Allowance</th>
+            </tr>
+          <tr id="reg-header-sub">
+            </tr>
+        </thead>
+        <tbody id="register-body"></tbody>
+      </table>
     </div>
+  </div>
+</div>
 
-    <script>
-        function createPlot(targetId, fnString, xDomain, yDomain) {
-            const container = document.getElementById(targetId);
-            // Default width, ideally filling the container correctly
-            const width = container.parentElement.clientWidth - 32 || 400; 
-            
-            functionPlot({
-                target: '#' + targetId,
-                width: width,
-                height: 350,
-                yAxis: { domain: yDomain },
-                xAxis: { domain: xDomain },
-                data: [{ 
-                    fn: fnString,
-                    color: '#2563eb', // Tailwind blue-600
-                }],
-                grid: true
-            });
-        }
+<div id="tab3" class="tab-content" style="display:none; padding: 2rem;">
+  <div style="background:white; padding:1.5rem; border-radius:12px; border:1px solid var(--border);">
+    <h3 style="margin-bottom:1rem; font-size:14px;">Audit History — All Payments</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Faculty</th>
+          <th>Month</th>
+          <th>Amount Paid</th>
+          <th>Date Paid</th>
+          <th>Recipient</th> <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="schedule-body"></tbody>
+    </table>
+  </div>
+</div>
 
-        // Initialize plots after a brief delay so DOM/containers are fully rendered
-        setTimeout(() => {
-            createPlot('plot1', 'x^3 + 3*x^2', [-4, 2.5], [-5, 6]);
-            createPlot('plot9', 'x / (x - 1)', [-4, 6], [-6, 6]);
-            createPlot('plot13', 'x / (x^2 - 4)', [-5, 5], [-5, 5]);
-            createPlot('plot15', 'x^2 / (x^2 + 3)', [-5, 5], [-0.5, 1.5]);
-            createPlot('plot21', '(x - 3) * sqrt(x)', [0, 6], [-3, 5]);
-        }, 150);
+<script>
+const months = ['May-25','Jun-25','Jul-25','Aug-25','Sep-25','Oct-25','Nov-25','Dec-25','Jan-26','Feb-26','Mar-26','Apr-26'];
+
+// Expanded data showing monthly method variation [cite: 2202, 2215]
+const facultyData = [
+  {
+    id: 'FAC-001', name: 'Dr. Sarah Mitchell', occupancy: 'Single', allowance: 500,
+    payments: {
+      'May-25': { amt: 500, date: '01 May', method: 'Employee' },
+      'Jun-25': { amt: 500, date: '02 Jun', method: 'Landlord' }, // Method changed
+      'Jul-25': { amt: 500, date: '01 Jul', method: 'Employee' }
+    }
+  },
+  {
+    id: 'FAC-002', name: 'Prof. James Chen', occupancy: 'Couple', allowance: 700,
+    payments: {
+      'May-25': { amt: 700, date: '01 May', method: 'Landlord' },
+      'Jun-25': { amt: 700, date: '01 Jun', method: 'Landlord' }
+    }
+  }
+];
+
+function buildUI() {
+  const topRow = document.getElementById('reg-header-top');
+  const subRow = document.getElementById('reg-header-sub');
+  const tbody = document.getElementById('register-body');
+  const sBody = document.getElementById('schedule-body');
+
+  // Build Headers [cite: 2114-2143]
+  months.forEach(m => {
+    const th = document.createElement('th');
+    th.colSpan = 3; th.style.textAlign = 'center'; th.style.background = '#e8edf8';
+    th.innerText = m;
+    topRow.appendChild(th);
+    subRow.innerHTML += `<th style="text-align:right">Amt</th><th>Date</th><th>To</th>`;
+  });
+
+  // Build Tab 1 & Tab 3 [cite: 2313, 2415]
+  facultyData.forEach(f => {
+    let row = `<tr><td class="sticky-col"><strong>${f.id}</strong><br><small>${f.name}</small></td>`;
+    row += `<td><span class="badge ${f.occupancy==='Couple'?'badge-amber':'badge-blue'}">${f.occupancy}</span></td>`;
+    row += `<td style="font-weight:600">$${f.allowance}</td>`;
+
+    months.forEach(m => {
+      const p = f.payments[m];
+      if (p) {
+        const mClass = p.method === 'Employee' ? 'to-emp' : 'to-ll';
+        row += `<td style="text-align:right; font-family:monospace">$${p.amt}</td>`;
+        row += `<td style="font-size:10px">${p.date}</td>`;
+        row += `<td><span class="method-pill ${mClass}">${p.method}</span></td>`;
         
-        // Basic responsive handling for chart widths
-        window.addEventListener('resize', () => {
-             // To prevent memory leaks or overwhelming the browser, a full robust app 
-             // would debounce and clear targets before rerendering on resize.
-        });
-    </script>
+        // Tab 3 history [cite: 2452-2463]
+        sBody.innerHTML += `<tr>
+          <td>${f.id}</td><td>${f.name}</td><td>${m}</td>
+          <td style="font-weight:600">$${p.amt}</td><td>${p.date}</td>
+          <td><span class="method-pill ${mClass}">${p.method}</span></td>
+          <td><span class="badge badge-green">Paid</span></td>
+        </tr>`;
+      } else {
+        row += `<td colspan="3" style="text-align:center; color:#ccc">—</td>`;
+      }
+    });
+    tbody.innerHTML += row + `</tr>`;
+  });
+}
+
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).style.display = 'block';
+  btn.classList.add('active');
+}
+
+buildUI();
+</script>
 </body>
 </html>
