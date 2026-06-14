@@ -3,938 +3,475 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Webster University — Faculty Rent Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Webster Finance Control — Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Spectral:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --navy: #0d1b3e;
-    --navy-mid: #1a3060;
-    --navy-light: #e8edf8;
-    --accent: #2563b0;
-    --accent-soft: #dbeafe;
-    --green: #166534;
-    --green-bg: #dcfce7;
-    --amber: #92400e;
-    --amber-bg: #fef3c7;
-    --gray: #6b7280;
-    --gray-bg: #f3f4f6;
-    --red: #991b1b;
-    --red-bg: #fee2e2;
-    --border: #e2e8f0;
-    --text: #0f172a;
-    --text-muted: #64748b;
-    --bg: #f8fafc;
-    --white: #ffffff;
-    --radius: 8px;
-    --radius-lg: 12px;
-    --purple: #6d28d9;
-    --purple-bg: #ede9fe;
-  }
-  body {
-    font-family: 'IBM Plex Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    font-size: 14px;
-    min-height: 100vh;
-  }
-  /* HEADER */
-  .header {
-    background: var(--navy);
-    padding: 0 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 60px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .header-left { display: flex; align-items: center; gap: 16px; }
-  .header-logo { font-size: 13px; font-weight: 600; color: #fff; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.9; }
-  .header-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.2); }
-  .header-title { font-size: 14px; color: rgba(255,255,255,0.75); font-weight: 400; }
-  .header-fy { font-size: 12px; background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.85); padding: 3px 10px; border-radius: 20px; font-family: 'IBM Plex Mono', monospace; }
+:root{
+  --bg:#F4F6F8; --surface:#FFFFFF; --ink:#16202B; --muted:#64707C; --faint:#97A1AB;
+  --navy:#1F3A5F; --navy-soft:#E7ECF2; --gold:#B5841F; --gold-soft:#F4ECD8;
+  --pos:#2C6E54; --pos-soft:#E3EFE9; --neg:#BC4030; --neg-soft:#F6E5E2;
+  --line:#E2E7EC; --line-strong:#CDD5DD;
+  --r:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
 
-  /* METRICS */
-  .metrics-bar {
-    background: var(--white);
-    border-bottom: 1px solid var(--border);
-    padding: 1rem 2rem;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-  }
-  .metric { display: flex; flex-direction: column; gap: 4px; padding: 0.75rem 1rem; background: var(--bg); border-radius: var(--radius); border: 1px solid var(--border); }
-  .metric-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); font-weight: 500; }
-  .metric-value { font-size: 22px; font-weight: 600; color: var(--navy); font-family: 'IBM Plex Mono', monospace; }
-  .metric-sub { font-size: 11px; color: var(--text-muted); }
+/* Masthead */
+.masthead{background:var(--navy);color:#fff;padding:18px 0}
+.masthead .wrap{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#A9BBD0;font-weight:500}
+.brand h1{font-family:Spectral,serif;font-weight:500;font-size:26px;letter-spacing:.01em;margin-top:2px}
+.brand h1 .accent{color:#E3BE78}
+.masthead .meta{display:flex;align-items:center;gap:18px;font-size:12.5px}
+.masthead .meta .fy{display:flex;flex-direction:column;gap:3px}
+.masthead .meta label{color:#A9BBD0;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase}
+.masthead select{background:#27466B}
+.fy-select{background:#27466B;color:#fff;border:1px solid #3A5C82;border-radius:6px;padding:5px 8px;font-family:inherit;font-size:13px}
+.stamp{display:flex;flex-direction:column;gap:3px;text-align:right}
+.stamp .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#7FC4A6;margin-right:5px}
+.stamp .val{font-weight:500}
 
-  /* TABS */
-  .tab-nav { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; gap: 0; }
-  .tab-btn {
-    padding: 12px 20px;
-    border: none;
-    background: none;
-    cursor: pointer;
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-muted);
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    transition: all 0.15s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .tab-btn:hover { color: var(--navy); }
-  .tab-btn.active { color: var(--navy); border-bottom-color: var(--accent); }
-  .tab-count { background: var(--navy-light); color: var(--accent); font-size: 11px; font-weight: 600; padding: 1px 6px; border-radius: 10px; font-family: 'IBM Plex Mono', monospace; }
+/* Filter bar */
+.filterbar{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.filterbar .wrap{display:flex;align-items:flex-end;gap:14px;padding:12px 24px;flex-wrap:wrap}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.field select{appearance:none;background:var(--bg);border:1px solid var(--line-strong);border-radius:6px;padding:7px 28px 7px 10px;font-family:inherit;font-size:13px;color:var(--ink);min-width:130px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2364707C' fill='none' stroke-width='1.4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+.field select:focus{outline:2px solid var(--navy);outline-offset:-1px}
+.toggle{display:inline-flex;border:1px solid var(--line-strong);border-radius:6px;overflow:hidden}
+.toggle button{border:none;background:var(--bg);padding:7px 12px;font-family:inherit;font-size:13px;cursor:pointer;color:var(--muted)}
+.toggle button.on{background:var(--navy);color:#fff;font-weight:500}
+.reset{margin-left:auto;align-self:flex-end;border:1px solid var(--line-strong);background:var(--surface);color:var(--muted);border-radius:6px;padding:7px 12px;font-family:inherit;font-size:13px;cursor:pointer}
+.reset:hover{color:var(--ink);border-color:var(--muted)}
 
-  /* CONTENT */
-  .tab-content { display: none; padding: 1.5rem 2rem; }
-  .tab-content.active { display: block; }
+/* Tabs */
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-top:6px;flex-wrap:wrap}
+.tabs button{border:none;background:none;padding:13px 16px;font-family:inherit;font-size:14px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button:hover{color:var(--ink)}
+.tabs button.on{color:var(--navy);font-weight:500;border-bottom-color:var(--gold)}
 
-  /* TABLE WRAPPER */
-  .table-wrapper { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
-  .table-toolbar {
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--border);
-    background: var(--bg);
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .table-toolbar-title { font-size: 13px; font-weight: 500; color: var(--text); }
-  .toolbar-note { font-size: 11px; color: var(--text-muted); }
-  .scroll-wrapper { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-  thead th {
-    background: var(--bg);
-    padding: 10px 12px;
-    text-align: left;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-muted);
-    border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-    position: sticky;
-    top: 0;
-  }
-  thead th.month-header { background: var(--navy-light); color: var(--accent); }
-  thead th.month-sub { background: #f0f5ff; color: #6b8fc9; font-size: 10px; }
-  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: var(--bg); }
-  td { padding: 10px 12px; white-space: nowrap; vertical-align: middle; }
-  .sticky-col { position: sticky; left: 0; background: var(--white); z-index: 1; border-right: 1px solid var(--border); }
-  tr:hover .sticky-col { background: var(--bg); }
+/* Panels */
+.panel{display:none;padding:26px 0 60px}
+.panel.on{display:block}
+.panel-head{margin-bottom:18px}
+.panel-head h2{font-family:Spectral,serif;font-weight:500;font-size:21px}
+.panel-head p{color:var(--muted);font-size:13px;margin-top:3px}
 
-  /* BADGES */
-  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; white-space: nowrap; }
-  .badge-green { background: var(--green-bg); color: var(--green); }
-  .badge-amber { background: var(--amber-bg); color: var(--amber); }
-  .badge-gray { background: var(--gray-bg); color: var(--gray); }
-  .badge-blue { background: var(--accent-soft); color: var(--accent); }
-  .badge-red { background: var(--red-bg); color: var(--red); }
-  .badge-purple { background: var(--purple-bg); color: var(--purple); }
+/* Cards / KPI */
+.grid{display:grid;gap:16px}
+.kpis{grid-template-columns:repeat(4,1fr);margin-bottom:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.kpi .label{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.kpi .value{font-size:27px;font-weight:600;letter-spacing:-.01em;margin-top:8px;line-height:1.1}
+.kpi .value.pos{color:var(--pos)} .kpi .value.neg{color:var(--neg)}
+.kpi .sub{font-size:12px;color:var(--muted);margin-top:6px}
+.kpi .sub strong{color:var(--ink);font-weight:600}
 
-  /* PAYMENT METHOD PILLS */
-  .method-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; white-space: nowrap; }
-  .method-employee { background: #eff6ff; color: #1d4ed8; }
-  .method-landlord { background: #f0fdf4; color: #15803d; }
-  .method-mixed { background: var(--purple-bg); color: var(--purple); }
+.card h3{font-size:13px;font-weight:600;letter-spacing:.02em;color:var(--ink);margin-bottom:2px}
+.card .hint{font-size:11.5px;color:var(--muted);margin-bottom:14px}
+.two{grid-template-columns:1.5fr 1fr}
+.chart-box{position:relative;height:260px}
+.chart-box.tall{height:300px}
 
-  /* MIXED METHOD LEGEND NOTE */
-  .legend-note {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    color: var(--text-muted);
-    padding: 4px 10px;
-    background: var(--purple-bg);
-    border-radius: 20px;
-    border: 1px solid #c4b5fd;
-  }
+/* Progress / utilisation */
+.util-track{height:9px;background:var(--bg);border-radius:5px;overflow:hidden;border:1px solid var(--line)}
+.util-fill{height:100%;background:var(--navy);border-radius:5px}
+.util-fill.over{background:var(--neg)}
+.util-fill.warn{background:var(--gold)}
 
-  .mono { font-family: 'IBM Plex Mono', monospace; }
-  .id-cell { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text-muted); }
-  .amount-paid { font-family: 'IBM Plex Mono', monospace; font-weight: 500; color: var(--navy); font-size: 12px; }
-  .date-paid { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+/* Quarter strip */
+.qstrip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:4px}
+.qbox{border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.qbox .qlab{font-size:11px;color:var(--muted);font-weight:500;letter-spacing:.04em}
+.qbox .qmon{font-size:10.5px;color:var(--faint);margin-bottom:9px}
+.qbox .qfig{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:3px}
+.qbox .qfig .num{font-weight:500}
+.qbox .qbar{height:7px;background:var(--bg);border:1px solid var(--line);border-radius:4px;overflow:hidden;margin-top:8px}
+.qbox .qbar span{display:block;height:100%;background:var(--gold)}
+.qbox .qbar span.over{background:var(--neg)}
 
-  /* PER-MONTH METHOD INDICATOR INSIDE CELL */
-  .month-cell-inner { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
-  .month-method-dot {
-    display: inline-block;
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .dot-employee { background: #1d4ed8; }
-  .dot-landlord { background: #15803d; }
+/* Tables */
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{text-align:left;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;padding:9px 10px;border-bottom:1.5px solid var(--line-strong);white-space:nowrap}
+thead th.r,tbody td.r{text-align:right}
+tbody td{padding:10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tbody tr:hover{background:#FAFBFC}
+.tag{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:20px;letter-spacing:.02em}
+.tag.over{background:var(--neg-soft);color:var(--neg)}
+.tag.under{background:var(--pos-soft);color:var(--pos)}
+.tag.fund101{background:var(--navy-soft);color:var(--navy)}
+.tag.fund201{background:var(--gold-soft);color:var(--gold)}
+.mini-bar{height:6px;width:90px;background:var(--bg);border:1px solid var(--line);border-radius:4px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:8px}
+.mini-bar span{display:block;height:100%;background:var(--navy)}
+.mini-bar span.over{background:var(--neg)}
+.code-pill{font-family:Inter;font-variant-numeric:tabular-nums;font-weight:600;color:var(--navy);background:var(--navy-soft);border-radius:5px;padding:1px 6px;font-size:12px;margin-right:8px}
 
-  /* Pill with dot inside month cell */
-  .mini-method {
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    font-size: 9px;
-    font-weight: 600;
-    padding: 1px 5px;
-    border-radius: 10px;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-  }
-  .mini-emp { background: #eff6ff; color: #1d4ed8; }
-  .mini-ll { background: #f0fdf4; color: #15803d; }
+/* Alert list */
+.alert-card{border-color:var(--neg);background:linear-gradient(0deg,#fff,#fff)}
+.alert-card h3{color:var(--neg)}
+.alert-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+.alert-row:last-child{border-bottom:none}
+.alert-row .over-amt{color:var(--neg);font-weight:600}
 
-  .not-paid { color: var(--border); font-size: 11px; }
-  .variance-pos { color: var(--green); font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; }
-  .variance-neg { color: var(--red); font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500; }
-  .variance-zero { color: var(--text-muted); font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
+.dq{display:flex;align-items:center;gap:14px;background:var(--gold-soft);border:1px solid #E8D9B0;border-radius:var(--r);padding:12px 16px;margin-bottom:18px;font-size:13px;color:#6B5212}
+.dq strong{color:#4A3808}
+.dq .big{font-size:20px;font-weight:600;color:var(--gold);font-variant-numeric:tabular-nums}
 
-  /* TAB 2 CONTRACTS */
-  .contracts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
-  .contract-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
-  .contract-card-header { background: var(--navy); padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
-  .contract-id { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: rgba(255,255,255,0.6); }
-  .contract-name { font-size: 14px; font-weight: 500; color: #fff; margin-top: 2px; }
-  .contract-body { padding: 14px 16px; }
-  .contract-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 12.5px; }
-  .contract-row:last-child { border-bottom: none; }
-  .contract-label { color: var(--text-muted); }
-  .contract-value { font-weight: 500; color: var(--text); text-align: right; }
-  .contract-amount { font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: var(--navy); }
-  .linked-faculty { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
-  .linked-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
-  .linked-chips { display: flex; flex-wrap: wrap; gap: 4px; }
-  .chip { background: var(--navy-light); color: var(--accent); font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+.split-legend{display:flex;gap:18px;margin-top:10px;font-size:12px;color:var(--muted)}
+.split-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle}
 
-  /* TAB 3 SCHEDULE */
-  .schedule-top { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.25rem; }
-  .search-title { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 10px; }
-  .search-row { display: flex; gap: 8px; align-items: center; }
-  .search-input {
-    flex: 1;
-    max-width: 300px;
-    padding: 8px 12px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 13px;
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.15s;
-  }
-  .search-input:focus { border-color: var(--accent); }
-  .search-btn { padding: 8px 16px; background: var(--navy); color: #fff; border: none; border-radius: var(--radius); font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.15s; }
-  .search-btn:hover { background: var(--navy-mid); }
-  .clear-btn { padding: 8px 12px; background: none; color: var(--text-muted); border: 1px solid var(--border); border-radius: var(--radius); font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; cursor: pointer; }
-  .clear-btn:hover { background: var(--bg); }
-
-  .profile-panel { background: var(--navy-light); border: 1px solid #c7d8f0; border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.25rem; display: none; }
-  .profile-panel.visible { display: block; }
-  .profile-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-  .avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--navy); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; flex-shrink: 0; }
-  .profile-name { font-size: 15px; font-weight: 600; color: var(--navy); }
-  .profile-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-  .profile-stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 10px; }
-  .pstat { background: var(--white); border-radius: var(--radius); padding: 8px 12px; }
-  .pstat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 600; margin-bottom: 2px; }
-  .pstat-value { font-size: 14px; font-weight: 600; color: var(--navy); font-family: 'IBM Plex Mono', monospace; }
-
-  .schedule-table-wrapper { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
-  .schedule-filters { padding: 10px 16px; background: var(--bg); border-bottom: 1px solid var(--border); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-  .filter-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 600; margin-right: 4px; }
-  .filter-btn { padding: 4px 10px; border: 1px solid var(--border); border-radius: 20px; background: var(--white); font-size: 11px; font-weight: 500; cursor: pointer; color: var(--text-muted); transition: all 0.1s; }
-  .filter-btn:hover, .filter-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
-  .method-filter-btn { padding: 4px 10px; border: 1px solid var(--border); border-radius: 20px; background: var(--white); font-size: 11px; font-weight: 500; cursor: pointer; color: var(--text-muted); transition: all 0.1s; }
-  .method-filter-btn:hover { background: var(--bg); }
-  .method-filter-btn.active-emp { background: #eff6ff; color: #1d4ed8; border-color: #93c5fd; }
-  .method-filter-btn.active-ll { background: #f0fdf4; color: #15803d; border-color: #86efac; }
-
-  .empty-state { padding: 3rem; text-align: center; color: var(--text-muted); font-size: 13px; }
-  .empty-icon { font-size: 2rem; margin-bottom: 8px; opacity: 0.3; }
-  .total-row td { background: var(--bg); font-weight: 600; border-top: 2px solid var(--border); }
-  .col-divider { border-left: 2px solid var(--navy-light) !important; }
-
-  footer-note { display: block; padding: 12px 2rem; font-size: 11px; color: var(--text-muted); border-top: 1px solid var(--border); background: var(--white); }
-
-  /* TOOLTIP */
-  .tooltip-wrap { position: relative; }
-  .tooltip-wrap:hover .tooltip-box { display: block; }
-  .tooltip-box {
-    display: none;
-    position: absolute;
-    bottom: calc(100% + 6px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--navy);
-    color: #fff;
-    font-size: 10px;
-    padding: 4px 8px;
-    border-radius: 5px;
-    white-space: nowrap;
-    z-index: 999;
-    pointer-events: none;
-  }
+.note{font-size:12px;color:var(--muted);background:var(--surface);border:1px dashed var(--line-strong);border-radius:var(--r);padding:12px 14px;margin-top:18px}
+.detail-meta{font-size:12px;color:var(--muted);margin-bottom:10px}
+@media(max-width:860px){.kpis{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}.qstrip{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-left">
-    <span class="header-logo">Webster University</span>
-    <div class="header-divider"></div>
-    <span class="header-title">Faculty Rent Tracker</span>
-  </div>
-  <span class="header-fy">FY 2025–2026</span>
-</div>
-
-<div class="metrics-bar">
-  <div class="metric">
-    <span class="metric-label">Active Faculty</span>
-    <span class="metric-value">4</span>
-    <span class="metric-sub">1 checked out</span>
-  </div>
-  <div class="metric">
-    <span class="metric-label">Monthly Commitment</span>
-    <span class="metric-value">$2,900</span>
-    <span class="metric-sub">2 singles · 2 couples</span>
-  </div>
-  <div class="metric">
-    <span class="metric-label">Total Paid YTD</span>
-    <span class="metric-value">$22,750</span>
-    <span class="metric-sub">Across all faculty</span>
-  </div>
-  <div class="metric">
-    <span class="metric-label">Pending This Month</span>
-    <span class="metric-value">$1,400</span>
-    <span class="metric-sub">May 2026 · 2 remaining</span>
-  </div>
-</div>
-
-<!-- TABS -->
-<div class="tab-nav">
-  <button class="tab-btn active" onclick="switchTab('tab1', this)">
-    Faculty Register <span class="tab-count">5</span>
-  </button>
-  <button class="tab-btn" onclick="switchTab('tab2', this)">
-    Landlord Contracts <span class="tab-count">4</span>
-  </button>
-  <button class="tab-btn" onclick="switchTab('tab3', this)">
-    Payment Schedule
-  </button>
-</div>
-
-<!-- TAB 1: FACULTY REGISTER -->
-<div id="tab1" class="tab-content active">
-  <div class="table-wrapper">
-    <div class="table-toolbar">
-      <span class="table-toolbar-title">Faculty Rent Register — FY 2025/2026</span>
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <span class="toolbar-note">Months: May 2025 → April 2026 · Each month shows Amount / Date Paid</span>
-        <span class="legend-note">
-          <span class="month-method-dot dot-employee"></span> Employee &nbsp;·&nbsp;
-          <span class="month-method-dot dot-landlord"></span> Landlord &nbsp;·&nbsp;
-          <span style="color:var(--purple);font-weight:600">M</span> Mixed
-        </span>
+<header class="masthead">
+  <div class="wrap">
+    <div class="brand">
+      <div class="eyebrow">Webster University · Tashkent</div>
+      <h1>Finance <span class="accent">Control</span></h1>
+    </div>
+    <div class="meta">
+      <div class="fy">
+        <label>Fiscal year</label>
+        <select class="fy-select"><option>FY 2025–26 (Jun–May)</option></select>
+      </div>
+      <div class="stamp">
+        <label style="color:#A9BBD0;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase">Status</label>
+        <span class="val"><span class="dot"></span>Data through 26 May 2026</span>
       </div>
     </div>
-    <div class="scroll-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th rowspan="2" class="sticky-col" style="min-width:70px">ID</th>
-            <th rowspan="2" style="min-width:170px">Name</th>
-            <th rowspan="2" style="min-width:110px">Department</th>
-            <th rowspan="2" style="min-width:90px">Occupancy</th>
-            <th rowspan="2" style="min-width:100px">Partner</th>
-            <th rowspan="2" style="min-width:120px">Payment To</th>
-            <th rowspan="2" style="min-width:90px">Landlord</th>
-            <th rowspan="2" style="min-width:95px">Check-in</th>
-            <th rowspan="2" style="min-width:95px">Check-out</th>
-            <th rowspan="2" style="min-width:60px; text-align:center">Add. Days</th>
-            <th rowspan="2" style="min-width:110px">Eff. End Date</th>
-            <th rowspan="2" style="min-width:85px; text-align:right">Allowance</th>
-            <th colspan="3" class="month-header" style="text-align:center">May-25</th>
-            <th colspan="3" class="month-header" style="text-align:center">Jun-25</th>
-            <th colspan="3" class="month-header" style="text-align:center">Jul-25</th>
-            <th colspan="3" class="month-header" style="text-align:center">Aug-25</th>
-            <th colspan="3" class="month-header" style="text-align:center">Sep-25</th>
-            <th colspan="3" class="month-header" style="text-align:center">Oct-25</th>
-            <th colspan="3" class="month-header" style="text-align:center">Nov-25</th>
-            <th colspan="3" class="month-header" style="text-align:center">Dec-25</th>
-            <th colspan="3" class="month-header" style="text-align:center">Jan-26</th>
-            <th colspan="3" class="month-header" style="text-align:center">Feb-26</th>
-            <th colspan="3" class="month-header" style="text-align:center">Mar-26</th>
-            <th colspan="3" class="month-header" style="text-align:center">Apr-26</th>
-            <th rowspan="2" style="min-width:90px; text-align:right" class="col-divider">Total Paid</th>
-            <th rowspan="2" style="min-width:80px; text-align:right">Expected</th>
-            <th rowspan="2" style="min-width:80px; text-align:right">Variance</th>
-            <th rowspan="2" style="min-width:90px">Status</th>
-          </tr>
-          <tr>
-            <th class="month-sub" style="text-align:right">Amt</th><th class="month-sub">Date</th><th class="month-sub" style="text-align:center">Via</th>
-            <th class="month-sub" style="text-align:right">Amt</th><th class="month-sub">Date</th><th class="month-sub" style="text-align:center">Via</th>
-            <th class="month-sub" style="text-align:right">Amt</th><th class="month-sub">Date</th><th class="month-sub" style="text-align:center">Via</th>
-            <th class="month-sub" style="text-align:right">Amt</th><th class="month-sub">Date</th><th class="month-sub" style="text-align:center">Via</th>
-            <th class="month-sub" style="text-align:right">Amt</th><th class="month-sub">Date</th><th class="month-sub" style="text-align:center">Via</th>
-            <th class="month-sub" style="text-align:right">Amt</th><th class="month-sub">Date</th><th class="month-sub" style="text-align:center">Via</th>
-            <th class="month-sub" style="text-align:right">Amt</th><th class="month-sub">Date</th><th class="month-sub" style="text-align:center">Via</th>
-            <th class="month-sub" style="text-align:right">Amt</th><th class="month-sub">Date</th><th class="month-sub" style="text-align:center">Via</th>
-            <th class="month-sub" style="text-align:right">Amt</th><th class="month-sub">Date</th><th class="month-sub" style="text-align:center">Via</th>
-            <th class="month-sub" style="text-align:right">Amt</th><th class="month-sub">Date</th><th class="month-sub" style="text-align:center">Via</th>
-            <th class="month-sub" style="text-align:right">Amt</th><th class="month-sub">Date</th><th class="month-sub" style="text-align:center">Via</th>
-            <th class="month-sub" style="text-align:right">Amt</th><th class="month-sub">Date</th><th class="month-sub" style="text-align:center">Via</th>
-          </tr>
-        </thead>
-        <tbody id="register-body"></tbody>
-      </table>
+  </div>
+</header>
+
+<div class="filterbar">
+  <div class="wrap">
+    <div class="field"><label>Month</label><select id="f-month"></select></div>
+    <div class="field"><label>Fund</label><select id="f-fund">
+      <option value="all">All funds</option>
+      <option value="201">201 · Unrestricted</option>
+      <option value="101">101 · Restricted</option>
+    </select></div>
+    <div class="field"><label>Department</label><select id="f-dept"></select></div>
+    <div class="field"><label>Payment code</label><select id="f-code"></select></div>
+    <div class="field"><label>Currency</label>
+      <div class="toggle" id="f-ccy">
+        <button data-ccy="USD" class="on">USD</button>
+        <button data-ccy="UZS">Soum</button>
+      </div>
+    </div>
+    <button class="reset" id="reset">Reset filters</button>
+  </div>
+  <div class="wrap" style="padding-top:0;padding-bottom:0">
+    <div class="tabs" id="tabs">
+      <button data-tab="overview" class="on">Overview</button>
+      <button data-tab="budget">Budget vs actual</button>
+      <button data-tab="dept">Department spend</button>
+      <button data-tab="code">Code spend</button>
+      <button data-tab="treasury">Treasury</button>
+      <button data-tab="detail">Transaction detail</button>
     </div>
   </div>
 </div>
 
-<!-- TAB 2: LANDLORD CONTRACTS -->
-<div id="tab2" class="tab-content">
-  <div class="contracts-grid" id="contracts-grid"></div>
-</div>
+<main class="wrap">
 
-<!-- TAB 3: PAYMENT SCHEDULE -->
-<div id="tab3" class="tab-content">
-  <div class="schedule-top">
-    <div class="search-title">Look up faculty payment history</div>
-    <div class="search-row">
-      <input type="text" class="search-input" id="search-input" placeholder="Type name or ID (e.g. FAC-001 or Vasquez)..." onkeydown="if(event.key==='Enter')doSearch()">
-      <button class="search-btn" onclick="doSearch()">Search</button>
-      <button class="clear-btn" onclick="clearSearch()">Clear</button>
+  <!-- OVERVIEW -->
+  <section class="panel on" id="p-overview">
+    <div class="panel-head"><h2>Overview</h2><p>Money received from HQ versus money spent this fiscal year, with quarterly funding pace.</p></div>
+    <div class="grid kpis">
+      <div class="card kpi"><div class="label">Received from HQ</div><div class="value" id="kpi-recv"></div><div class="sub" id="kpi-recv-sub"></div></div>
+      <div class="card kpi"><div class="label">Total spent</div><div class="value" id="kpi-spent"></div><div class="sub" id="kpi-spent-sub"></div></div>
+      <div class="card kpi"><div class="label">Net position</div><div class="value" id="kpi-net"></div><div class="sub">Received minus spent</div></div>
+      <div class="card kpi"><div class="label">Annual budget used</div><div class="value" id="kpi-util"></div><div class="sub"><div class="util-track" style="margin-top:4px"><div class="util-fill" id="kpi-util-bar"></div></div></div></div>
     </div>
-  </div>
-
-  <div class="profile-panel" id="profile-panel"></div>
-
-  <div class="schedule-table-wrapper">
-    <div class="schedule-filters">
-      <span class="filter-label">Status:</span>
-      <button class="filter-btn active" onclick="filterSchedule('all', this)">All</button>
-      <button class="filter-btn" onclick="filterSchedule('paid', this)">Paid</button>
-      <button class="filter-btn" onclick="filterSchedule('upcoming', this)">Upcoming</button>
-      <button class="filter-btn" onclick="filterSchedule('overdue', this)">Overdue</button>
-      <span style="width:1px;height:16px;background:var(--border);display:inline-block;margin:0 4px"></span>
-      <span class="filter-label">Method:</span>
-      <button class="method-filter-btn" id="mfb-all" onclick="filterMethod('all', this)">All</button>
-      <button class="method-filter-btn" id="mfb-emp" onclick="filterMethod('employee', this)">To Employee</button>
-      <button class="method-filter-btn" id="mfb-ll" onclick="filterMethod('landlord', this)">To Landlord</button>
+    <div class="grid two">
+      <div class="card"><h3>Monthly spend</h3><p class="hint">Spending recorded each month (expense leg only).</p><div class="chart-box"><canvas id="c-monthly"></canvas></div></div>
+      <div class="card"><h3>Restricted vs unrestricted</h3><p class="hint">Share of spend by fund.</p><div class="chart-box"><canvas id="c-fund"></canvas></div>
+        <div class="split-legend"><span><i style="background:var(--gold)"></i>201 Unrestricted</span><span><i style="background:var(--navy)"></i>101 Restricted</span></div>
+      </div>
     </div>
-    <div class="scroll-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Method</th>
-            <th>Month</th>
-            <th style="text-align:right">Amount Due</th>
-            <th>Date Paid</th>
-            <th>Status</th>
-            <th>Landlord</th>
-            <th>Notes</th>
-          </tr>
-        </thead>
-        <tbody id="schedule-body"></tbody>
-      </table>
+    <div class="card" style="margin-top:16px"><h3>Quarterly funding pace</h3><p class="hint">HQ releases funds quarterly. Each quarter's allotment versus what was actually spent — your burn rate.</p>
+      <div class="qstrip" id="qstrip"></div>
     </div>
-  </div>
-</div>
+  </section>
 
-<footer-note id="footer">Webster University · Finance Department · Prototype v2.0 · Payment method now tracked per month · Data is sample/placeholder</footer-note>
+  <!-- BUDGET VS ACTUAL -->
+  <section class="panel" id="p-budget">
+    <div class="panel-head"><h2>Budget vs actual</h2><p>The control view, in USD. Budget, actual, variance and remaining balance by department, with overspend flags.</p></div>
+    <div class="grid two" style="margin-bottom:16px">
+      <div class="card"><h3>Variance by department</h3><p class="hint">Remaining balance — green is surplus, red is overspent.</p><div class="chart-box tall"><canvas id="c-var"></canvas></div></div>
+      <div class="card alert-card"><h3>Overspent — needs attention</h3><p class="hint">Departments or codes already past budget.</p><div id="alert-list"></div></div>
+    </div>
+    <div class="card">
+      <h3>Department detail</h3><p class="hint">Click a column header logic shown here as a static prototype table.</p>
+      <table><thead><tr>
+        <th>Department</th><th class="r">Budget</th><th class="r">Actual</th><th class="r">Variance</th><th class="r">Used</th><th>Status</th>
+      </tr></thead><tbody id="budget-rows"></tbody></table>
+    </div>
+  </section>
+
+  <!-- DEPARTMENT SPEND -->
+  <section class="panel" id="p-dept">
+    <div class="panel-head"><h2>Department spend</h2><p>Which departments spent the most. Shown in the selected currency.</p></div>
+    <div class="dq">
+      <span class="big" id="dq-pct"></span>
+      <span>of spending is <strong>tagged to a department</strong>. The rest is central cost (card refills, conversions, bank charges) that can't be attributed to one department — shown as <strong>Unallocated</strong>.</span>
+    </div>
+    <div class="card"><h3>Spend by department</h3><p class="hint">Ranked, highest first.</p><div class="chart-box tall"><canvas id="c-dept"></canvas></div></div>
+    <div class="card" style="margin-top:16px"><h3>Department table</h3><p class="hint">Spend and share of total.</p>
+      <table><thead><tr><th>Department</th><th class="r">Spend</th><th class="r">Share</th><th>Top code</th></tr></thead><tbody id="dept-rows"></tbody></table>
+    </div>
+  </section>
+
+  <!-- CODE SPEND -->
+  <section class="panel" id="p-code">
+    <div class="panel-head"><h2>Code spend</h2><p>Which payment codes took the biggest chunk of the money.</p></div>
+    <div class="card"><h3>Spend by payment code</h3><p class="hint">Ranked, highest first.</p><div class="chart-box tall"><canvas id="c-code"></canvas></div></div>
+    <div class="card" style="margin-top:16px"><h3>Code table</h3><p class="hint">Each code's spend and share of the total.</p>
+      <table><thead><tr><th>Code</th><th>Category</th><th class="r">Spend</th><th class="r">Share</th></tr></thead><tbody id="code-rows"></tbody></table>
+    </div>
+  </section>
+
+  <!-- TREASURY -->
+  <section class="panel" id="p-treasury">
+    <div class="panel-head"><h2>Treasury &amp; cash movements</h2><p>Funding received, currency conversions and corporate-card transfers. Tracked separately — these never inflate spending totals.</p></div>
+    <div class="grid kpis" style="grid-template-columns:repeat(3,1fr)">
+      <div class="card kpi"><div class="label">HQ funding received</div><div class="value" id="t-recv"></div><div class="sub">From St. Louis · 4 quarterly transfers</div></div>
+      <div class="card kpi"><div class="label">Currency converted</div><div class="value" id="t-conv"></div><div class="sub">USD → soum (codes 1053 / 1054)</div></div>
+      <div class="card kpi"><div class="label">To corporate cards</div><div class="value" id="t-card"></div><div class="sub">Card refills (codes 1052 / 1054)</div></div>
+    </div>
+    <div class="card"><h3>Cash movement log</h3><p class="hint">Matched on description, so code changes (1053→1054) don't break it.</p>
+      <table><thead><tr><th>Date</th><th>Movement</th><th class="r">Amount (soum)</th><th>Reference</th></tr></thead><tbody id="treasury-rows"></tbody></table>
+    </div>
+  </section>
+
+  <!-- DETAIL -->
+  <section class="panel" id="p-detail">
+    <div class="panel-head"><h2>Transaction detail</h2><p>Every line, filtered live by the controls above. The searchable backstop you drill into from any chart.</p></div>
+    <div class="card">
+      <div class="detail-meta" id="detail-meta"></div>
+      <table><thead><tr><th>Date</th><th>Fund</th><th>Dept</th><th>Code</th><th>Category</th><th class="r">Amount</th></tr></thead><tbody id="detail-rows"></tbody></table>
+    </div>
+    <div class="note">In the real build this table exports to Excel and shows all matching lines. Here it's capped to the first 60 rows for speed.</div>
+  </section>
+
+</main>
 
 <script>
-// ─────────────────────────────────────────────────────────────────────────────
-// DATA MODEL
-// Each payment entry now supports an optional per-month `method` override.
-// If not specified, falls back to the faculty-level default `defaultMethod`.
-// method: 'employee' | 'landlord'
-// ─────────────────────────────────────────────────────────────────────────────
+/* ---------- Reference data (mirrors the real file) ---------- */
+const DEPTS=[[1,"Faculty development"],[2,"IT"],[3,"Graduate"],[4,"Finance"],[5,"Marketing"],[6,"Academic affairs"],[7,"Operations"],[8,"Career development"],[9,"HR"],[10,"Student affairs"],[11,"Wellness"],[12,"Advising"],[13,"Extended sites"],[14,"Undergraduate"]];
+const CODES=[[4594,"Academic events / research"],[5003,"Employee recognition"],[5105,"Payroll"],[5200,"Student employment"],[6110,"Travel & convention"],[6111,"International travel"],[6140,"Social programs"],[6180,"Printing"],[6240,"Supplies"],[6300,"Entertainment & social"],[6370,"Services & prof fees"],[6410,"Professional development"],[6510,"Minor computer equipment"],[6430,"Bank charges"]];
+const MONTHS=["Jun 2025","Jul 2025","Aug 2025","Sep 2025","Oct 2025","Nov 2025","Dec 2025","Jan 2026","Feb 2026","Mar 2026","Apr 2026","May 2026"];
+const RATE=[12640,12685,12710,12760,12820,12890,12950,13010,13060,13090,13120,13180];
+const QUARTERS=[["Q1","Jun–Aug",[0,1,2]],["Q2","Sep–Nov",[3,4,5]],["Q3","Dec–Feb",[6,7,8]],["Q4","Mar–May",[9,10,11]]];
+const deptName=c=>(DEPTS.find(d=>d[0]===c)||[0,"Unallocated"])[1];
+const codeName=c=>(CODES.find(d=>d[0]===c)||[0,"—"])[1];
 
-const faculty = [
-  {
-    id: 'FAC-001', name: 'Dr. Sarah Mitchell', dept: 'Humanities', occupancy: 'Single',
-    partner: '—', defaultMethod: 'employee', landlord: 'LL-001',
-    checkin: 'Sep 1, 2025', checkout: 'May 15, 2026', addDays: 0, addReason: '',
-    allowance: 500, status: 'Active',
-    payments: {
-      'May-25': null, 'Jun-25': null, 'Jul-25': null, 'Aug-25': null,
-      'Sep-25': {amt: 500, date: '01 Sep', method: 'employee'},
-      'Oct-25': {amt: 500, date: '01 Oct', method: 'employee'},
-      'Nov-25': {amt: 500, date: '01 Nov', method: 'landlord'},  // switched to landlord
-      'Dec-25': {amt: 500, date: '01 Dec', method: 'landlord'},
-      'Jan-26': {amt: 500, date: '02 Jan', method: 'employee'},  // back to employee
-      'Feb-26': {amt: 500, date: '01 Feb', method: 'employee'},
-      'Mar-26': {amt: 500, date: '03 Mar', method: 'employee'},
-      'Apr-26': {amt: 500, date: '01 Apr', method: 'employee'}
-    }
-  },
-  {
-    id: 'FAC-002', name: 'Prof. James Chen', dept: 'Business', occupancy: 'Couple',
-    partner: 'Linda Chen', defaultMethod: 'landlord', landlord: 'LL-002',
-    checkin: 'Aug 20, 2025', checkout: 'May 20, 2026', addDays: 8, addReason: 'Graduation ceremony',
-    allowance: 700, status: 'On Extension',
-    payments: {
-      'May-25': null, 'Jun-25': null, 'Jul-25': null,
-      'Aug-25': {amt: 373, date: '20 Aug', method: 'landlord'},
-      'Sep-25': {amt: 700, date: '01 Sep', method: 'landlord'},
-      'Oct-25': {amt: 700, date: '01 Oct', method: 'landlord'},
-      'Nov-25': {amt: 700, date: '01 Nov', method: 'landlord'},
-      'Dec-25': {amt: 700, date: '01 Dec', method: 'landlord'},
-      'Jan-26': {amt: 700, date: '02 Jan', method: 'employee'}, // paid to employee in Jan
-      'Feb-26': {amt: 700, date: '01 Feb', method: 'employee'},
-      'Mar-26': {amt: 700, date: '03 Mar', method: 'landlord'},
-      'Apr-26': {amt: 700, date: '01 Apr', method: 'landlord'}
-    }
-  },
-  {
-    id: 'FAC-003', name: 'Dr. Ahmad Karimi', dept: 'Economics', occupancy: 'Single',
-    partner: '—', defaultMethod: 'employee', landlord: 'LL-003',
-    checkin: 'Jan 15, 2026', checkout: 'May 10, 2026', addDays: 0, addReason: '',
-    allowance: 500, status: 'Checked Out',
-    payments: {
-      'May-25': null, 'Jun-25': null, 'Jul-25': null, 'Aug-25': null,
-      'Sep-25': null, 'Oct-25': null, 'Nov-25': null, 'Dec-25': null,
-      'Jan-26': {amt: 275, date: '15 Jan', method: 'employee'},
-      'Feb-26': {amt: 500, date: '01 Feb', method: 'employee'},
-      'Mar-26': {amt: 500, date: '03 Mar', method: 'employee'},
-      'Apr-26': {amt: 500, date: '01 Apr', method: 'employee'}
-    }
-  },
-  {
-    id: 'FAC-004', name: 'Prof. Elena Vasquez', dept: 'Psychology', occupancy: 'Single',
-    partner: '—', defaultMethod: 'landlord', landlord: 'LL-001',
-    checkin: 'Sep 1, 2025', checkout: 'Jun 30, 2026', addDays: 0, addReason: '',
-    allowance: 500, status: 'Active',
-    payments: {
-      'May-25': null, 'Jun-25': null, 'Jul-25': null, 'Aug-25': null,
-      'Sep-25': {amt: 500, date: '01 Sep', method: 'landlord'},
-      'Oct-25': {amt: 500, date: '01 Oct', method: 'landlord'},
-      'Nov-25': {amt: 500, date: '01 Nov', method: 'landlord'},
-      'Dec-25': {amt: 500, date: '01 Dec', method: 'employee'}, // exception: employee
-      'Jan-26': {amt: 500, date: '02 Jan', method: 'landlord'},
-      'Feb-26': {amt: 500, date: '01 Feb', method: 'landlord'},
-      'Mar-26': {amt: 500, date: '03 Mar', method: 'landlord'},
-      'Apr-26': {amt: 500, date: '01 Apr', method: 'landlord'}
-    }
-  },
-  {
-    id: 'FAC-005', name: 'Dr. Robert Okonkwo', dept: 'Computer Science', occupancy: 'Couple',
-    partner: 'Mary Okonkwo', defaultMethod: 'landlord', landlord: 'LL-004',
-    checkin: 'Sep 1, 2025', checkout: 'May 15, 2026', addDays: 8, addReason: 'Graduation ceremony',
-    allowance: 700, status: 'On Extension',
-    payments: {
-      'May-25': null, 'Jun-25': null, 'Jul-25': null, 'Aug-25': null,
-      'Sep-25': {amt: 700, date: '01 Sep', method: 'landlord'},
-      'Oct-25': {amt: 700, date: '01 Oct', method: 'landlord'},
-      'Nov-25': {amt: 700, date: '01 Nov', method: 'landlord'},
-      'Dec-25': {amt: 700, date: '01 Dec', method: 'landlord'},
-      'Jan-26': {amt: 700, date: '02 Jan', method: 'landlord'},
-      'Feb-26': {amt: 700, date: '01 Feb', method: 'landlord'},
-      'Mar-26': {amt: 700, date: '03 Mar', method: 'landlord'},
-      'Apr-26': null
+/* ---------- Seeded RNG for reproducible mock data ---------- */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const rng=mulberry32(20260614);
+const ri=(a,b)=>Math.floor(rng()*(b-a+1))+a;
+const pick=arr=>arr[Math.floor(rng()*arr.length)];
+
+/* ---------- Generate budget lines + transactions ---------- */
+const BUDGET=[]; const TX=[]; let txid=10000;
+DEPTS.forEach(([dc])=>{
+  const nCodes=ri(3,6);
+  const used=new Set();
+  for(let i=0;i<nCodes;i++){
+    let cd=pick(CODES)[0]; if(used.has(cd))continue; used.add(cd);
+    const fund=rng()<0.78?201:101;
+    const budget=ri(4,90)*1000 + ri(0,9)*100;
+    BUDGET.push({dept:dc,code:cd,fund,budget});
+    const util=0.35+rng()*0.95;                 // 0.35 .. 1.30  (some overspend)
+    const actual=Math.round(budget*util);
+    let remaining=actual;
+    const splits=ri(2,7);
+    for(let s=0;s<splits;s++){
+      const last=s===splits-1;
+      const amt=last?remaining:Math.round(actual/splits*(0.5+rng()));
+      remaining-=amt; if(amt<=0)continue;
+      const m=ri(0,11);
+      TX.push({m,fund,dept:dc,code:cd,usd:amt,uzs:Math.round(amt*RATE[m]),dir:"spend",internal:false,desc:codeName(cd)});
     }
   }
-];
-
-const contracts = [
-  {
-    id: 'LL-001', name: 'Amir Tashkentov', phone: '+998 90 123 4567',
-    email: 'a.tashkentov@mail.uz', address: '14 Mustaqillik Shoh Koʻchasi, Tashkent',
-    start: 'Aug 1, 2025', end: 'Jul 31, 2026', rent: 500,
-    payDay: '1st of month', bank: 'Kapitalbank', account: 'UZ••••9812',
-    status: 'Active', faculty: ['FAC-001 · Dr. Mitchell', 'FAC-004 · Prof. Vasquez']
-  },
-  {
-    id: 'LL-002', name: 'Global Housing LLC', phone: '+998 71 200 5500',
-    email: 'rentals@globalhousing.uz', address: '3 Amir Temur Blvd, Suite 4B, Tashkent',
-    start: 'Aug 1, 2025', end: 'Jul 31, 2026', rent: 700,
-    payDay: '1st of month', bank: 'Ipoteka Bank', account: 'UZ••••3341',
-    status: 'Active', faculty: ['FAC-002 · Prof. Chen (couple)']
-  },
-  {
-    id: 'LL-003', name: 'Diana Petrova', phone: '+998 93 456 7890',
-    email: 'dpetrova@inbox.uz', address: '77 Chilonzor District, Block 9, Tashkent',
-    start: 'Jan 1, 2026', end: 'Jun 30, 2026', rent: 500,
-    payDay: '15th of month', bank: 'Uzpromstroybank', account: 'UZ••••7723',
-    status: 'Expired', faculty: ['FAC-003 · Dr. Karimi']
-  },
-  {
-    id: 'LL-004', name: 'Nodir Yusupov Properties', phone: '+998 97 321 0099',
-    email: 'n.yusupov@estate.uz', address: '22 Yunusobod District, Tashkent',
-    start: 'Aug 15, 2025', end: 'Jul 31, 2026', rent: 700,
-    payDay: '1st of month', bank: 'Agrobank', account: 'UZ••••5589',
-    status: 'Active', faculty: ['FAC-005 · Dr. Okonkwo (couple)']
-  }
-];
-
-const months = ['May-25','Jun-25','Jul-25','Aug-25','Sep-25','Oct-25','Nov-25','Dec-25','Jan-26','Feb-26','Mar-26','Apr-26'];
-const monthFull = {
-  'May-25':'May 2025','Jun-25':'Jun 2025','Jul-25':'Jul 2025','Aug-25':'Aug 2025',
-  'Sep-25':'Sep 2025','Oct-25':'Oct 2025','Nov-25':'Nov 2025','Dec-25':'Dec 2025',
-  'Jan-26':'Jan 2026','Feb-26':'Feb 2026','Mar-26':'Mar 2026','Apr-26':'Apr 2026'
-};
-const today = new Date('2026-05-11');
-
-function isPast(mo) {
-  const map = {
-    'May-25':new Date('2025-05-01'),'Jun-25':new Date('2025-06-01'),'Jul-25':new Date('2025-07-01'),
-    'Aug-25':new Date('2025-08-01'),'Sep-25':new Date('2025-09-01'),'Oct-25':new Date('2025-10-01'),
-    'Nov-25':new Date('2025-11-01'),'Dec-25':new Date('2025-12-01'),'Jan-26':new Date('2026-01-01'),
-    'Feb-26':new Date('2026-02-01'),'Mar-26':new Date('2026-03-01'),'Apr-26':new Date('2026-04-01')
-  };
-  return map[mo] < today;
+});
+/* Unallocated central spend (no department) */
+const CENTRAL=[6430,6240,6370,6300];
+for(let i=0;i<70;i++){
+  const m=ri(0,11),cd=pick(CENTRAL),fund=rng()<0.85?201:101,amt=ri(1,18)*100+ri(0,99);
+  TX.push({m,fund,dept:0,code:cd,usd:amt,uzs:Math.round(amt*RATE[m]),dir:"spend",internal:false,desc:codeName(cd)});
 }
+/* Income — quarterly HQ inflows */
+QUARTERS.forEach((q,qi)=>{
+  const m=q[2][0];const amt=ri(260,340)*1000;
+  TX.push({m,fund:201,dept:0,code:0,usd:amt,uzs:Math.round(amt*RATE[m]),dir:"recv",internal:true,desc:"Inward transaction from STL"});
+});
+TX.push({m:2,fund:101,dept:0,code:0,usd:90000,uzs:Math.round(90000*RATE[2]),dir:"recv",internal:true,desc:"Restricted grant — ETA"});
+/* Treasury internal flows */
+for(let i=0;i<26;i++){const m=ri(0,11),amt=ri(20,160)*1000;TX.push({m,fund:201,dept:0,code:rng()<.5?1053:1054,usd:amt,uzs:Math.round(amt*RATE[m]),dir:"conv",internal:true,desc:"Conversion"});}
+for(let i=0;i<22;i++){const m=ri(0,11),amt=ri(8,60)*1000;TX.push({m,fund:201,dept:0,code:pick([1052,1054,1059]),usd:amt,uzs:Math.round(amt*RATE[m]),dir:"card",internal:true,desc:"Transfer to corporate card"});}
+TX.forEach(t=>t.id=++txid);
 
-// Resolve effective method for a payment: per-payment override OR faculty default
-function effectiveMethod(f, mo) {
-  const p = f.payments[mo];
-  if (p && p.method) return p.method;
-  return f.defaultMethod;
-}
+/* ---------- State + filtering ---------- */
+const state={month:"all",fund:"all",dept:"all",code:"all",ccy:"USD",tab:"overview"};
+const matchF=t=>(state.fund==="all"||t.fund==+state.fund)&&(state.dept==="all"||t.dept==+state.dept)&&(state.code==="all"||t.code==+state.code)&&(state.month==="all"||t.m==+state.month);
+const spendTx=()=>TX.filter(t=>t.dir==="spend"&&!t.internal&&matchF(t));
+const val=t=>state.ccy==="USD"?t.usd:t.uzs;
+const fmt=v=>state.ccy==="USD"?"$"+Math.round(v).toLocaleString():Math.round(v).toLocaleString()+" сум";
+const fmtUSD=v=>"$"+Math.round(v).toLocaleString();
 
-// Determine if faculty has mixed methods across paid months
-function hasMixedMethods(f) {
-  const methods = months
-    .map(mo => f.payments[mo])
-    .filter(Boolean)
-    .map(p => p.method);
-  return new Set(methods).size > 1;
-}
+/* ---------- Chart helpers ---------- */
+const FONT={family:"Inter"};let charts={};
+function destroy(k){if(charts[k]){charts[k].destroy();delete charts[k]}}
+const grid={color:"#E2E7EC"},ticks={color:"#64707C",font:FONT};
+Chart.defaults.font.family="Inter";Chart.defaults.color="#64707C";
 
-function statusBadge(s) {
-  if (s === 'Active') return `<span class="badge badge-green">${s}</span>`;
-  if (s === 'On Extension') return `<span class="badge badge-amber">${s}</span>`;
-  if (s === 'Checked Out') return `<span class="badge badge-gray">${s}</span>`;
-  return `<span class="badge badge-blue">${s}</span>`;
-}
+/* ---------- Renderers ---------- */
+function renderOverview(){
+  const sp=spendTx();
+  const spent=sp.reduce((a,t)=>a+val(t),0);
+  const recvTx=TX.filter(t=>t.dir==="recv"&&(state.fund==="all"||t.fund==+state.fund)&&(state.month==="all"||t.m==+state.month));
+  const recv=recvTx.reduce((a,t)=>a+(state.ccy==="USD"?t.usd:t.uzs),0);
+  const budget=BUDGET.filter(b=>(state.fund==="all"||b.fund==+state.fund)&&(state.dept==="all"||b.dept==+state.dept)&&(state.code==="all"||b.code==+state.code)).reduce((a,b)=>a+b.budget,0);
+  const budgetDisp=state.ccy==="USD"?budget:budget*RATE[11];
+  document.getElementById("kpi-recv").textContent=fmt(recv);
+  document.getElementById("kpi-recv-sub").innerHTML="<strong>"+recvTx.length+"</strong> transfers from HQ";
+  document.getElementById("kpi-spent").textContent=fmt(spent);
+  document.getElementById("kpi-spent-sub").innerHTML="<strong>"+sp.length+"</strong> expense lines";
+  const net=recv-spent;const ne=document.getElementById("kpi-net");
+  ne.textContent=(net<0?"−":"")+fmt(Math.abs(net));ne.className="value "+(net<0?"neg":"pos");
+  const util=budget?Math.round(spent/(budgetDisp)*100):0;
+  document.getElementById("kpi-util").textContent=util+"%";
+  const bar=document.getElementById("kpi-util-bar");bar.style.width=Math.min(util,100)+"%";
+  bar.className="util-fill"+(util>100?" over":util>85?" warn":"");
 
-function methodPill(m, mixed) {
-  if (mixed) return `<span class="method-pill method-mixed">⇄ Mixed</span>`;
-  if (m === 'employee') return `<span class="method-pill method-employee">▶ Employee</span>`;
-  return `<span class="method-pill method-landlord">▶ Landlord</span>`;
-}
+  const monthly=MONTHS.map((_,m)=>sp.filter(t=>t.m===m).reduce((a,t)=>a+val(t),0));
+  destroy("monthly");
+  charts.monthly=new Chart(document.getElementById("c-monthly"),{type:"line",data:{labels:MONTHS.map(m=>m.slice(0,3)),datasets:[{data:monthly,borderColor:"#1F3A5F",backgroundColor:"rgba(31,58,95,.08)",fill:true,tension:.3,pointRadius:3,pointBackgroundColor:"#1F3A5F",borderWidth:2}]},options:{maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmt(c.parsed.y)}}},scales:{y:{grid,ticks:{...ticks,callback:v=>state.ccy==="USD"?"$"+(v/1000)+"k":(v/1e6)+"M"}},x:{grid:{display:false},ticks}}}});
 
-function miniMethod(m) {
-  if (m === 'employee') return `<span class="mini-method mini-emp">E</span>`;
-  return `<span class="mini-method mini-ll">L</span>`;
-}
+  const f201=sp.filter(t=>t.fund===201).reduce((a,t)=>a+val(t),0);
+  const f101=sp.filter(t=>t.fund===101).reduce((a,t)=>a+val(t),0);
+  destroy("fund");
+  charts.fund=new Chart(document.getElementById("c-fund"),{type:"doughnut",data:{labels:["201 Unrestricted","101 Restricted"],datasets:[{data:[f201,f101],backgroundColor:["#B5841F","#1F3A5F"],borderWidth:0}]},options:{maintainAspectRatio:false,cutout:"62%",plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.label+": "+fmt(c.parsed)}}}}});
 
-// ─────────────────────────────────────────────────────────────────────────────
-// TAB 1: FACULTY REGISTER
-// ─────────────────────────────────────────────────────────────────────────────
-function buildRegister() {
-  const tbody = document.getElementById('register-body');
-  faculty.forEach(f => {
-    let totalPaid = 0;
-    let monthCells = '';
-    const mixed = hasMixedMethods(f);
-
-    months.forEach(mo => {
-      const p = f.payments[mo];
-      if (p) {
-        totalPaid += p.amt;
-        const meth = p.method || f.defaultMethod;
-        monthCells += `
-          <td style="text-align:right"><span class="amount-paid">$${p.amt}</span></td>
-          <td><span class="date-paid">${p.date}</span></td>
-          <td style="text-align:center">${miniMethod(meth)}</td>`;
-      } else {
-        monthCells += `<td style="text-align:center"><span class="not-paid">—</span></td><td></td><td></td>`;
-      }
-    });
-
-    const paidMonths = Object.values(f.payments).filter(p => p !== null).length;
-    const addAmt = (f.allowance / 30) * f.addDays;
-    const expected = f.allowance * paidMonths + addAmt;
-    const variance = totalPaid - expected;
-
-    let varianceCell = '';
-    if (Math.abs(variance) < 1) {
-      varianceCell = `<td style="text-align:right"><span class="variance-zero">$0</span></td>`;
-    } else if (variance > 0) {
-      varianceCell = `<td style="text-align:right"><span class="variance-pos">+$${Math.abs(variance).toFixed(0)}</span></td>`;
-    } else {
-      varianceCell = `<td style="text-align:right"><span class="variance-neg">-$${Math.abs(variance).toFixed(0)}</span></td>`;
-    }
-
-    const effEnd = f.addDays > 0
-      ? `${f.checkout} <span style="font-size:10px;color:var(--amber)">(+${f.addDays}d)</span>`
-      : f.checkout;
-
-    tbody.innerHTML += `
-      <tr>
-        <td class="sticky-col id-cell">${f.id}</td>
-        <td><strong style="font-weight:500">${f.name}</strong></td>
-        <td style="color:var(--text-muted)">${f.dept}</td>
-        <td><span class="badge ${f.occupancy==='Couple'?'badge-amber':'badge-blue'}">${f.occupancy}</span></td>
-        <td style="color:var(--text-muted);font-size:12px">${f.partner}</td>
-        <td>${methodPill(f.defaultMethod, mixed)}</td>
-        <td><span class="id-cell">${f.landlord}</span></td>
-        <td style="color:var(--text-muted);font-size:12px">${f.checkin}</td>
-        <td style="color:var(--text-muted);font-size:12px">${f.checkout}</td>
-        <td style="text-align:center">${f.addDays > 0 ? `<span class="badge badge-amber">${f.addDays}</span>` : '—'}</td>
-        <td style="font-size:12px">${effEnd}</td>
-        <td style="text-align:right"><span class="mono" style="font-weight:600;color:var(--navy)">$${f.allowance}</span></td>
-        ${monthCells}
-        <td style="text-align:right" class="col-divider"><span class="mono" style="font-weight:600">$${totalPaid.toLocaleString()}</span></td>
-        <td style="text-align:right"><span class="mono" style="color:var(--text-muted)">$${expected.toFixed(0)}</span></td>
-        ${varianceCell}
-        <td>${statusBadge(f.status)}</td>
-      </tr>`;
+  const qs=document.getElementById("qstrip");qs.innerHTML="";
+  QUARTERS.forEach(([ql,qm,ms])=>{
+    const allot=budget/4;const allotDisp=state.ccy==="USD"?allot:allot*RATE[ms[1]];
+    const spq=sp.filter(t=>ms.includes(t.m)).reduce((a,t)=>a+val(t),0);
+    const pct=allotDisp?Math.min(Math.round(spq/allotDisp*100),140):0;
+    qs.innerHTML+=`<div class="qbox"><div class="qlab">${ql} allotment</div><div class="qmon">${qm}</div>
+      <div class="qfig"><span>Allotted</span><span class="num">${fmt(allotDisp)}</span></div>
+      <div class="qfig"><span>Spent</span><span class="num">${fmt(spq)}</span></div>
+      <div class="qbar"><span class="${pct>100?'over':''}" style="width:${Math.min(pct,100)}%"></span></div>
+      <div class="qmon" style="margin-top:6px">${pct}% of quarter used</div></div>`;
   });
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// TAB 2: LANDLORD CONTRACTS
-// ─────────────────────────────────────────────────────────────────────────────
-function buildContracts() {
-  const grid = document.getElementById('contracts-grid');
-  contracts.forEach(c => {
-    const statusClass = c.status === 'Active' ? 'badge-green' : c.status === 'Expired' ? 'badge-red' : 'badge-amber';
-    const chips = c.faculty.map(f => `<span class="chip">${f}</span>`).join('');
+function aggBy(key){
+  const sp=spendTx();const m={};
+  sp.forEach(t=>{const k=t[key];m[k]=m[k]||{v:0,codes:{}};m[k].v+=val(t);m[k].codes[t.code]=(m[k].codes[t.code]||0)+val(t)});
+  return m;
+}
 
-    // Count payments received to this landlord across all faculty
-    let toLL = 0, toEmp = 0;
-    faculty.forEach(f => {
-      if (f.landlord !== c.id) return;
-      months.forEach(mo => {
-        const p = f.payments[mo];
-        if (!p) return;
-        const m = p.method || f.defaultMethod;
-        if (m === 'landlord') toLL++;
-        else toEmp++;
-      });
-    });
+function renderDept(){
+  const m=aggBy("dept");const sp=spendTx();const total=sp.reduce((a,t)=>a+val(t),0);
+  const tagged=sp.filter(t=>t.dept!==0).reduce((a,t)=>a+val(t),0);
+  document.getElementById("dq-pct").textContent=(total?Math.round(tagged/total*100):0)+"%";
+  const rows=Object.entries(m).map(([d,o])=>({d:+d,name:deptName(+d),v:o.v,codes:o.codes})).sort((a,b)=>b.v-a.v);
+  destroy("dept");
+  charts.dept=new Chart(document.getElementById("c-dept"),{type:"bar",data:{labels:rows.map(r=>r.name),datasets:[{data:rows.map(r=>r.v),backgroundColor:rows.map(r=>r.d===0?"#97A1AB":"#1F3A5F"),borderRadius:3}]},options:{indexAxis:"y",maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmt(c.parsed.x)}}},scales:{x:{grid,ticks:{...ticks,callback:v=>state.ccy==="USD"?"$"+(v/1000)+"k":(v/1e6)+"M"}},y:{grid:{display:false},ticks}}}});
+  const tb=document.getElementById("dept-rows");tb.innerHTML="";
+  rows.forEach(r=>{const top=Object.entries(r.codes).sort((a,b)=>b[1]-a[1])[0];
+    tb.innerHTML+=`<tr><td>${r.name}</td><td class="r num">${fmt(r.v)}</td><td class="r num">${total?(r.v/total*100).toFixed(1):0}%</td><td><span class="code-pill">${top?top[0]:"—"}</span>${top?codeName(+top[0]):""}</td></tr>`;});
+}
 
-    const totalPayments = toLL + toEmp;
-    const mixedNote = totalPayments > 0
-      ? `<div class="contract-row">
-          <span class="contract-label">Payment routing</span>
-          <span class="contract-value" style="display:flex;gap:6px;align-items:center">
-            <span class="mini-method mini-ll">L ${toLL}</span>
-            <span class="mini-method mini-emp">E ${toEmp}</span>
-          </span>
-        </div>`
-      : '';
+function renderCode(){
+  const m=aggBy("code");const sp=spendTx();const total=sp.reduce((a,t)=>a+val(t),0);
+  const rows=Object.entries(m).map(([c,o])=>({c:+c,name:codeName(+c),v:o.v})).sort((a,b)=>b.v-a.v);
+  destroy("code");
+  charts.code=new Chart(document.getElementById("c-code"),{type:"bar",data:{labels:rows.map(r=>r.c+" "+r.name),datasets:[{data:rows.map(r=>r.v),backgroundColor:"#B5841F",borderRadius:3}]},options:{indexAxis:"y",maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmt(c.parsed.x)}}},scales:{x:{grid,ticks:{...ticks,callback:v=>state.ccy==="USD"?"$"+(v/1000)+"k":(v/1e6)+"M"}},y:{grid:{display:false},ticks}}}});
+  const tb=document.getElementById("code-rows");tb.innerHTML="";
+  rows.forEach(r=>tb.innerHTML+=`<tr><td><span class="code-pill">${r.c}</span></td><td>${r.name}</td><td class="r num">${fmt(r.v)}</td><td class="r num">${total?(r.v/total*100).toFixed(1):0}%</td></tr>`);
+}
 
-    grid.innerHTML += `
-      <div class="contract-card">
-        <div class="contract-card-header">
-          <div>
-            <div class="contract-id">${c.id}</div>
-            <div class="contract-name">${c.name}</div>
-          </div>
-          <span class="badge ${statusClass}" style="background:rgba(255,255,255,0.15);color:#fff">${c.status}</span>
-        </div>
-        <div class="contract-body">
-          <div class="contract-row">
-            <span class="contract-label">Agreed monthly rent</span>
-            <span class="contract-amount">$${c.rent}</span>
-          </div>
-          <div class="contract-row">
-            <span class="contract-label">Payment due</span>
-            <span class="contract-value">${c.payDay}</span>
-          </div>
-          <div class="contract-row">
-            <span class="contract-label">Contract period</span>
-            <span class="contract-value" style="font-size:12px">${c.start} — ${c.end}</span>
-          </div>
-          ${mixedNote}
-          <div class="contract-row">
-            <span class="contract-label">Phone</span>
-            <span class="contract-value">${c.phone}</span>
-          </div>
-          <div class="contract-row">
-            <span class="contract-label">Email</span>
-            <span class="contract-value" style="color:var(--accent);font-size:12px">${c.email}</span>
-          </div>
-          <div class="contract-row">
-            <span class="contract-label">Bank account</span>
-            <span class="contract-value mono">${c.bank} · ${c.account}</span>
-          </div>
-          <div class="contract-row" style="align-items:flex-start">
-            <span class="contract-label">Address</span>
-            <span class="contract-value" style="font-size:12px;max-width:200px;white-space:normal;text-align:right">${c.address}</span>
-          </div>
-          <div class="linked-faculty">
-            <div class="linked-label">Assigned faculty</div>
-            <div class="linked-chips">${chips}</div>
-          </div>
-        </div>
-      </div>`;
+function renderBudget(){
+  /* always USD for budget control */
+  const fb=BUDGET.filter(b=>(state.fund==="all"||b.fund==+state.fund)&&(state.dept==="all"||b.dept==+state.dept)&&(state.code==="all"||b.code==+state.code));
+  const byDept={};
+  fb.forEach(b=>{byDept[b.dept]=byDept[b.dept]||{budget:0,actual:0};byDept[b.dept].budget+=b.budget});
+  TX.filter(t=>t.dir==="spend"&&!t.internal&&t.dept!==0&&(state.fund==="all"||t.fund==+state.fund)&&(state.dept==="all"||t.dept==+state.dept)&&(state.code==="all"||t.code==+state.code)).forEach(t=>{if(byDept[t.dept])byDept[t.dept].actual+=t.usd});
+  const rows=Object.entries(byDept).map(([d,o])=>({d:+d,name:deptName(+d),budget:o.budget,actual:o.actual,variance:o.budget-o.actual,used:o.budget?o.actual/o.budget*100:0})).sort((a,b)=>a.variance-b.variance);
+  /* variance chart */
+  destroy("var");
+  charts.var=new Chart(document.getElementById("c-var"),{type:"bar",data:{labels:rows.map(r=>r.name),datasets:[{data:rows.map(r=>r.variance),backgroundColor:rows.map(r=>r.variance<0?"#BC4030":"#2C6E54"),borderRadius:3}]},options:{indexAxis:"y",maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>(c.parsed.x<0?"Over by ":"Surplus ")+fmtUSD(Math.abs(c.parsed.x))}}},scales:{x:{grid,ticks:{...ticks,callback:v=>"$"+(v/1000)+"k"}},y:{grid:{display:false},ticks:{...ticks,font:{family:"Inter",size:11}}}}});
+  /* alerts */
+  const over=rows.filter(r=>r.variance<0).sort((a,b)=>a.variance-b.variance);
+  const al=document.getElementById("alert-list");al.innerHTML=over.length?"":'<p style="color:var(--muted);font-size:13px">Nothing over budget for this selection.</p>';
+  over.forEach(r=>al.innerHTML+=`<div class="alert-row"><span>${r.name} <span style="color:var(--faint)">· ${Math.round(r.used)}% used</span></span><span class="over-amt num">−${fmtUSD(Math.abs(r.variance))}</span></div>`);
+  /* table */
+  const tb=document.getElementById("budget-rows");tb.innerHTML="";
+  rows.slice().sort((a,b)=>b.budget-a.budget).forEach(r=>{
+    const over=r.variance<0;const w=Math.min(Math.round(r.used),100);
+    tb.innerHTML+=`<tr><td>${r.name}</td><td class="r num">${fmtUSD(r.budget)}</td><td class="r num">${fmtUSD(r.actual)}</td>
+      <td class="r num" style="color:${over?'var(--neg)':'var(--pos)'}">${over?'−':''}${fmtUSD(Math.abs(r.variance))}</td>
+      <td class="r num">${Math.round(r.used)}%<span class="mini-bar"><span class="${over?'over':''}" style="width:${w}%"></span></span></td>
+      <td><span class="tag ${over?'over':'under'}">${over?'Over':'On track'}</span></td></tr>`;
   });
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// TAB 3: PAYMENT SCHEDULE
-// ─────────────────────────────────────────────────────────────────────────────
-let activeFilter = 'all';
-let activeMethodFilter = 'all';
-let activeSearch = null;
-
-function buildSchedule(filterFaculty = null, filter = 'all', methodFilter = 'all') {
-  const tbody = document.getElementById('schedule-body');
-  tbody.innerHTML = '';
-  let allRows = [];
-
-  faculty.forEach(f => {
-    months.forEach(mo => {
-      const p = f.payments[mo];
-      const past = isPast(mo);
-      let status = '', statusClass = '';
-
-      if (p) {
-        status = 'Paid'; statusClass = 'badge-green';
-      } else if (past) {
-        // Only mark overdue if the faculty was checked-in during this month
-        status = 'Overdue'; statusClass = 'badge-red';
-      } else {
-        status = 'Upcoming'; statusClass = 'badge-blue';
-      }
-
-      const ll = contracts.find(c => c.id === f.landlord);
-      const meth = p ? (p.method || f.defaultMethod) : f.defaultMethod;
-
-      allRows.push({
-        fId: f.id, name: f.name,
-        method: meth,
-        defaultMethod: f.defaultMethod,
-        isOverridden: p && p.method && p.method !== f.defaultMethod,
-        month: mo, monthFull: monthFull[mo],
-        amt: f.allowance, datePaid: p ? p.date : '—', status, statusClass,
-        landlord: ll ? ll.name : f.landlord,
-        notes: f.addDays > 0 && mo === 'Apr-26' ? `Add. ${f.addDays} days after checkout` : ''
-      });
-    });
-  });
-
-  if (filterFaculty) {
-    allRows = allRows.filter(r => r.fId === filterFaculty || r.name.toLowerCase().includes(filterFaculty.toLowerCase()));
-  }
-  if (filter === 'paid') allRows = allRows.filter(r => r.status === 'Paid');
-  if (filter === 'upcoming') allRows = allRows.filter(r => r.status === 'Upcoming');
-  if (filter === 'overdue') allRows = allRows.filter(r => r.status === 'Overdue');
-  if (methodFilter === 'employee') allRows = allRows.filter(r => r.method === 'employee');
-  if (methodFilter === 'landlord') allRows = allRows.filter(r => r.method === 'landlord');
-
-  if (allRows.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">🔍</div>No results found.</div></td></tr>`;
-    return;
-  }
-
-  allRows.forEach(r => {
-    const overrideMark = r.isOverridden
-      ? `<span class="badge badge-purple" style="font-size:9px;padding:1px 5px;margin-left:4px" title="Overridden from default">override</span>`
-      : '';
-    tbody.innerHTML += `
-      <tr>
-        <td class="id-cell">${r.fId}</td>
-        <td style="font-weight:500">${r.name}</td>
-        <td>${methodPill(r.method, false)}${overrideMark}</td>
-        <td style="font-family:'IBM Plex Mono',monospace;font-size:12px">${r.monthFull}</td>
-        <td style="text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500">$${r.amt}</td>
-        <td style="font-size:12px;color:var(--text-muted)">${r.datePaid !== '—' ? r.datePaid + ' ' + r.month.slice(-2) : '—'}</td>
-        <td><span class="badge ${r.statusClass}">${r.status}</span></td>
-        <td style="font-size:12px;color:var(--text-muted)">${r.landlord}</td>
-        <td style="font-size:11px;color:var(--text-muted)">${r.notes}</td>
-      </tr>`;
-  });
+function renderTreasury(){
+  const f=t=>(state.month==="all"||t.m==+state.month)&&(state.fund==="all"||t.fund==+state.fund);
+  const recv=TX.filter(t=>t.dir==="recv"&&f(t)).reduce((a,t)=>a+t.uzs,0);
+  const conv=TX.filter(t=>t.dir==="conv"&&f(t)).reduce((a,t)=>a+t.uzs,0);
+  const card=TX.filter(t=>t.dir==="card"&&f(t)).reduce((a,t)=>a+t.uzs,0);
+  document.getElementById("t-recv").textContent=Math.round(recv).toLocaleString()+" сум";
+  document.getElementById("t-conv").textContent=Math.round(conv).toLocaleString()+" сум";
+  document.getElementById("t-card").textContent=Math.round(card).toLocaleString()+" сум";
+  const log=TX.filter(t=>["recv","conv","card"].includes(t.dir)&&f(t)).sort((a,b)=>a.m-b.m);
+  const tb=document.getElementById("treasury-rows");tb.innerHTML="";
+  const lbl={recv:"HQ funding in",conv:"Currency conversion",card:"Corporate card refill"};
+  log.forEach(t=>tb.innerHTML+=`<tr><td>${MONTHS[t.m]}</td><td>${lbl[t.dir]}</td><td class="r num">${t.uzs.toLocaleString()}</td><td style="color:var(--muted)">${t.code?('code '+t.code+' · '):''}${t.desc}</td></tr>`);
 }
 
-function doSearch() {
-  const q = document.getElementById('search-input').value.trim();
-  if (!q) return;
-  const f = faculty.find(f => f.id.toLowerCase() === q.toLowerCase() || f.name.toLowerCase().includes(q.toLowerCase()));
-  const panel = document.getElementById('profile-panel');
-
-  if (f) {
-    const initials = f.name.split(' ').filter(w => w.match(/[A-Z]/)).slice(0, 2).map(w => w[0]).join('');
-    const totalPaid = Object.values(f.payments).filter(Boolean).reduce((s, p) => s + p.amt, 0);
-    const paidMonths = Object.values(f.payments).filter(Boolean).length;
-    const ll = contracts.find(c => c.id === f.landlord);
-    const mixed = hasMixedMethods(f);
-    const empCount = months.filter(mo => f.payments[mo] && (f.payments[mo].method || f.defaultMethod) === 'employee').length;
-    const llCount = months.filter(mo => f.payments[mo] && (f.payments[mo].method || f.defaultMethod) === 'landlord').length;
-
-    panel.innerHTML = `
-      <div class="profile-header">
-        <div class="avatar">${initials}</div>
-        <div>
-          <div class="profile-name">${f.name}</div>
-          <div class="profile-meta">${f.id} · ${f.dept} · ${f.occupancy}${f.partner !== '—' ? ' with ' + f.partner : ''}</div>
-        </div>
-        ${statusBadge(f.status)}
-      </div>
-      <div class="profile-stats">
-        <div class="pstat"><div class="pstat-label">Monthly</div><div class="pstat-value">$${f.allowance}</div></div>
-        <div class="pstat"><div class="pstat-label">Months Paid</div><div class="pstat-value">${paidMonths}</div></div>
-        <div class="pstat"><div class="pstat-label">Total Paid</div><div class="pstat-value">$${totalPaid.toLocaleString()}</div></div>
-        <div class="pstat"><div class="pstat-label">Landlord</div><div class="pstat-value" style="font-size:11px">${ll ? ll.name.split(' ')[0] : '—'}</div></div>
-        <div class="pstat"><div class="pstat-label">Method Split</div><div class="pstat-value" style="font-size:11px;display:flex;gap:4px">${mixed ? `<span class="mini-method mini-emp">E${empCount}</span><span class="mini-method mini-ll">L${llCount}</span>` : methodPill(f.defaultMethod, false)}</div></div>
-      </div>`;
-    panel.classList.add('visible');
-    activeSearch = f.id;
-  } else {
-    panel.innerHTML = `<div style="color:var(--red);font-size:13px">No faculty found for "<strong>${q}</strong>". Try an ID like FAC-001 or a partial name.</div>`;
-    panel.classList.add('visible');
-    activeSearch = null;
-  }
-  buildSchedule(activeSearch, activeFilter, activeMethodFilter);
+function renderDetail(){
+  const sp=TX.filter(t=>t.dir==="spend"&&!t.internal&&matchF(t)).sort((a,b)=>a.m-b.m);
+  document.getElementById("detail-meta").innerHTML="<strong>"+sp.length+"</strong> matching lines · showing first 60";
+  const tb=document.getElementById("detail-rows");tb.innerHTML="";
+  sp.slice(0,60).forEach(t=>tb.innerHTML+=`<tr><td>${MONTHS[t.m]}</td><td><span class="tag fund${t.fund}">${t.fund}</span></td><td>${t.dept?deptName(t.dept):'<span style="color:var(--faint)">Unallocated</span>'}</td><td><span class="code-pill">${t.code}</span></td><td>${codeName(t.code)}</td><td class="r num">${fmt(t)}</td></tr>`);
 }
 
-function clearSearch() {
-  document.getElementById('search-input').value = '';
-  document.getElementById('profile-panel').classList.remove('visible');
-  activeSearch = null;
-  buildSchedule(null, activeFilter, activeMethodFilter);
+function renderAll(){
+  ({overview:renderOverview,budget:renderBudget,dept:renderDept,code:renderCode,treasury:renderTreasury,detail:renderDetail})[state.tab]();
 }
 
-function filterSchedule(f, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  activeFilter = f;
-  buildSchedule(activeSearch, activeFilter, activeMethodFilter);
-}
-
-function filterMethod(m, btn) {
-  // Reset method button styles
-  document.getElementById('mfb-all').className = 'method-filter-btn';
-  document.getElementById('mfb-emp').className = 'method-filter-btn';
-  document.getElementById('mfb-ll').className  = 'method-filter-btn';
-  // Apply active class
-  if (m === 'employee') btn.classList.add('active-emp');
-  else if (m === 'landlord') btn.classList.add('active-ll');
-  else btn.className = 'method-filter-btn'; // "all" — no special class
-  activeMethodFilter = m;
-  buildSchedule(activeSearch, activeFilter, activeMethodFilter);
-}
-
-function switchTab(id, btn) {
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  btn.classList.add('active');
-}
-
-// Init
-buildRegister();
-buildContracts();
-buildSchedule();
-// Set "all" method button as default-styled
-document.getElementById('mfb-all').style.background = 'var(--bg)';
+/* ---------- Wire up controls ---------- */
+function fill(sel,opts){const s=document.getElementById(sel);opts.forEach(([v,l])=>{const o=document.createElement("option");o.value=v;o.textContent=l;s.appendChild(o)})}
+fill("f-month",[["all","All months"],...MONTHS.map((m,i)=>[i,m])]);
+fill("f-dept",[["all","All departments"],...DEPTS.map(([c,n])=>[c,c+" · "+n])]);
+fill("f-code",[["all","All codes"],...CODES.map(([c,n])=>[c,c+" · "+n])]);
+document.getElementById("f-month").onchange=e=>{state.month=e.target.value;renderAll()};
+document.getElementById("f-fund").onchange=e=>{state.fund=e.target.value;renderAll()};
+document.getElementById("f-dept").onchange=e=>{state.dept=e.target.value;renderAll()};
+document.getElementById("f-code").onchange=e=>{state.code=e.target.value;renderAll()};
+document.querySelectorAll("#f-ccy button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#f-ccy button").forEach(x=>x.classList.remove("on"));b.classList.add("on");state.ccy=b.dataset.ccy;renderAll()});
+document.getElementById("reset").onclick=()=>{state.month="all";state.fund="all";state.dept="all";state.code="all";["f-month","f-fund","f-dept","f-code"].forEach(id=>document.getElementById(id).value="all");renderAll()};
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("#tabs button").forEach(x=>x.classList.remove("on"));b.classList.add("on");
+  document.querySelectorAll(".panel").forEach(p=>p.classList.remove("on"));
+  document.getElementById("p-"+b.dataset.tab).classList.add("on");
+  state.tab=b.dataset.tab;renderAll();
+});
+renderAll();
 </script>
 </body>
 </html>
